@@ -5,7 +5,7 @@ RUN echo "Project: ${PROJECT}"
 
 # Actualiza los repositorios y instala zsh
 RUN apt-get update && \
-    apt-get install -y zsh && \
+    apt-get install -y zsh nano && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
