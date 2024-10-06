@@ -1,0 +1,26 @@
+services:
+  # Servicio del que extienden los demás que contiene la configuración común
+  base:
+    image: chess-image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - PROJECT=chess
+
+  # Servicio de desarrollo
+  dev:
+    extends: base
+    ports:
+      - "7000:7000"
+    command: ["sh", "-c", "bun i && bun run start --host=0.0.0.0 --port=7000"]
+    container_name: chess-dev-container
+
+  # Servicio para construir la aplicación
+  build:
+    extends: base
+    command: ["sh", "-c", "bun i && bun run build"]
+    container_name: chess-build-container
