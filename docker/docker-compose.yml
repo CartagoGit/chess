@@ -1,3 +1,5 @@
+
+
 services:
   # Servicio del que extienden los demás que contiene la configuración común
   base:
@@ -6,8 +8,13 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - .:/app
+      - ../:/app
+      # Se montan los archivos de configuración de zsh
+      - .zshrc:/root/.zshrc
+      - .p10k.zsh:/root/.p10k.zsh
+
     working_dir: /app
+    entrypoint: ["/bin/bash", "-c"]
     environment:
       - PROJECT=chess
 
@@ -16,11 +23,15 @@ services:
     extends: base
     ports:
       - "7000:7000"
-    command: ["sh", "-c", "bun i && bun run start --host=0.0.0.0 --port=7000"]
+    command: ["bun i && bun run start --host=0.0.0.0 --port=7000"]
+    environment:
+      - CONTAINER_NAME=chess-dev-container
     container_name: chess-dev-container
 
   # Servicio para construir la aplicación
   build:
     extends: base
-    command: ["sh", "-c", "bun i && bun run build"]
+    command: ["bun i && bun run build"]
+    environment:
+      - CONTAINER_NAME=chess-build-container
     container_name: chess-build-container
