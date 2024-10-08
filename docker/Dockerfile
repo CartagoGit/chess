@@ -59,7 +59,8 @@ RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$HOME/.oh-
 # Instala los plugins de oh-my-zsh manualmente
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" && \
     git clone https://github.com/zsh-users/zsh-completions "$HOME/.oh-my-zsh/custom/plugins/zsh-completions" && \
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" && \
+    git clone https://github.com/fdellwing/zsh-bat.git "$HOME/.oh-my-zsh/custom/plugins/zsh-bat"
 
 
 

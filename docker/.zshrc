@@ -79,7 +79,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Add wisely, as too many plugins slow down shell startup.
 autoload -Uz compinit
 compinit
-plugins=(fasd git vscode yarn zsh-autosuggestions zsh-completions nvm zsh-syntax-highlighting jsontools)
+plugins=(fasd git vscode yarn zsh-autosuggestions zsh-completions nvm zsh-syntax-highlighting jsontools zsh-bat)
 # F-Sy-H
 source $ZSH/oh-my-zsh.sh
 
