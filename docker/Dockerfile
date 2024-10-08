@@ -4,13 +4,17 @@ ARG PROJECT
 RUN echo "Project: ${PROJECT}"
 
 # Actualiza los repositorios y instala zsh
-RUN apt-get update && \
-    apt-get install -y zsh nano && \
-    apt-get clean && \
+RUN apt update && \
+    apt install -y zsh nano bat && \
+    apt clean && \
     rm -rf /var/lib/apt/lists/*
 
 SHELL [ "/bin/zsh", "-c" ]
 
+# Configurar Bat
+RUN mkdir -p root/.local/bin && \
+  ln -s /usr/bin/batcat root/.local/bin/bat
+ENV PATH="/root/.local/bin:$PATH"
 
 
 # Instalar Bun
