@@ -13,7 +13,7 @@
   --info: var(--blue-500);
 
   --white-cell: var(--zinc-100);
-  --black-cell: var(--teal-800);
+  --black-cell: var(--sky-800);
 }
 
 // Reusable variables
@@ -27,4 +27,5 @@
   --br-right: 0 5px 5px 0;
   --border: 5px solid;
   --min-table-size: 400px;
+  --min-cell-size: 50px;
 }

@@ -1,5 +1,48 @@
-@for (row of board; track row[0].row) {
-  @for (cell of row; track cell.col) {
-    {{ cell | json }}
+<div class="table">
+  @for (row of board; let rowIndex = $index; track row[0].row) {
+    <div class="row">
+      @for (cell of row; let colIndex = $index; track cell.col) {
+        @let cellColor = cell.color;
+        @let isLastRow = rowIndex === board.length - 1;
+        @let isLastCol = colIndex === row.length - 1;
+        @let isFirstRow = rowIndex === 0;
+        @let isFirstCol = colIndex === 0;
+
+        <span
+          class="cell"
+          [ngClass]="{
+            'cell-white': cellColor === 'white',
+            'cell-black': cellColor === 'black',
+            'rounded-top-left': isFirstRow && isFirstCol,
+            'rounded-top-right': isFirstRow && isLastCol,
+            'rounded-bottom-left': isLastRow && isFirstCol,
+            'rounded-bottom-right': isLastRow && isLastCol,
+          }"
+        >
+          @if (isLastCol) {
+            <span
+              class="row-value"
+              [ngClass]="{
+                'text-black': cellColor === 'white',
+                'text-white': cellColor === 'black',
+              }"
+            >
+              {{ cell.row }}
+            </span>
+          }
+          @if (isLastRow) {
+            <span
+              class="col-value"
+              [ngClass]="{
+                'text-black': cellColor === 'white',
+                'text-white': cellColor === 'black',
+              }"
+            >
+              {{ cell.col }}
+            </span>
+          }
+        </span>
+      }
+    </div>
   }
-}
+</div>
