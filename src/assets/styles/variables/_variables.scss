@@ -1,9 +1,12 @@
-@import './colors';
+@import "./colors";
 
+// Colors basic
 :root {
-  --primary: var(--slate-500);
+  --background: var(--gray-900);
+  --primary: var(--gray-700);
   --secondary: var(--gray-500);
-  --accent: var(--zinc-500);
+  --tertiary: var(--gray-300);
+  --accent: var(--zinc-700);
   --warning: var(--yellow-500);
   --danger: var(--red-500);
   --success: var(--green-500);
@@ -11,4 +14,17 @@
 
   --white-cell: var(--zinc-100);
   --black-cell: var(--teal-800);
+}
+
+// Reusable variables
+:root {
+  --text-primary: var(--gray-300);
+  --box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  --br: 5px;
+  --br-bottom: 0 0 5px 5px;
+  --br-top: 5px 5px 0 0;
+  --br-left: 5px 0 0 5px;
+  --br-right: 0 5px 5px 0;
+  --border: 5px solid;
+  --min-table-size: 400px;
 }
