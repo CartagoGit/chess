@@ -1,0 +1,16 @@
+@import './colors';
+
+:root {
+  --primary: var(--slate-500);
+  --secondary: var(--gray-500);
+  --accent: var(--zinc-500);
+  --warning: var(--yellow-500);
+  --danger: var(--red-500);
+  --success: var(--green-500);
+  --info: var(--blue-500);
+
+  --white-piece: var(--white);
+  --black-piece: var(--black);
+  --white-cell: var(--zinc-100);
+  --black-cell: var(--teal-800);
+}
