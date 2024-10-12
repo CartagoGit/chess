@@ -17,7 +17,7 @@ export class BoardComponent {
         col: cols[col],
         row: rows[row],
         piece: null,
-        color: (row + col) % 2 === 0 ? 'white' : 'black',
+        color: (row + col) % 2 === 0 ? 'black' : 'white',
       };
     });
   });

@@ -1,7 +1,5 @@
-@for(row of board; track row[0].row)
-{
-@for(cell of row; track cell.col){
-
-{{ cell }}
-}
+@for (row of board; track row[0].row) {
+  @for (cell of row; track cell.col) {
+    {{ cell | json }}
+  }
 }
