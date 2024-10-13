@@ -6,7 +6,8 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { PieceComponent } from '@components/piece/piece.component';
-import { ICell, IPiece } from '@interfaces/board.types';
+import { ICell } from '@interfaces/board.types';
+import { Piece } from '@models/piece.model';
 import { cols, rows } from 'src/app/constants/board.constants';
 
 @Component({
@@ -39,49 +40,73 @@ export class BoardComponent {
     this.board[0][0].update((value) => {
       return {
         ...value,
-        piece: { kind: 'tower', color: 'black' },
+        piece: new Piece({
+          kind: 'tower',
+          color: 'black',
+        }),
       };
     });
     this.board[0][1].update((value) => {
       return {
         ...value,
-        piece: { kind: 'tower', color: 'white' },
+        piece: new Piece({
+          kind: 'tower',
+          color: 'white',
+        }),
       };
     });
     this.board[0][2].update((value) => {
       return {
         ...value,
-        piece: { kind: 'horse', color: 'black' },
+        piece: new Piece({
+          kind: 'horse',
+          color: 'black',
+        }),
       };
     });
     this.board[0][3].update((value) => {
       return {
         ...value,
-        piece: { kind: 'horse', color: 'white' },
+        piece: new Piece({
+          kind: 'horse',
+          color: 'white',
+        }),
       };
     });
     this.board[0][4].update((value) => {
       return {
         ...value,
-        piece: { kind: 'bishop', color: 'black' },
+        piece: new Piece({
+          kind: 'bishop',
+          color: 'black',
+        }),
       };
     });
     this.board[0][5].update((value) => {
       return {
         ...value,
-        piece: { kind: 'bishop', color: 'white' },
+        piece: new Piece({
+          kind: 'bishop',
+          color: 'white',
+        }),
       };
     });
     this.board[0][6].update((value) => {
       return {
         ...value,
-        piece: { kind: 'queen', color: 'black' },
+        piece: new Piece({
+          kind: 'queen',
+          color: 'black',
+        }),
       };
     });
     this.board[0][7].update((value) => {
       return {
         ...value,
-        piece: { kind: 'queen', color: 'white' },
+        piece: new Piece({
+          kind: 'queen',
+          color: 'white',
+        }),
       };
     });
     this.board[1].forEach((cell, index) => {
@@ -90,24 +115,36 @@ export class BoardComponent {
           if (index % 2 === 0) {
             return {
               ...value,
-              piece: { kind: 'king', color: 'black' },
+              piece: new Piece({
+                kind: 'king',
+                color: 'black',
+              }),
             };
           } else {
             return {
               ...value,
-              piece: { kind: 'king', color: 'white' },
+              piece: new Piece({
+                kind: 'king',
+                color: 'white',
+              }),
             };
           }
         }
         if (index % 2 === 0) {
           return {
             ...value,
-            piece: { kind: 'pawn', color: 'white' },
+            piece: new Piece({
+              kind: 'pawn',
+              color: 'white',
+            }),
           };
         }
         return {
           ...value,
-          piece: { kind: 'pawn', color: 'black' },
+          piece: new Piece({
+            kind: 'pawn',
+            color: 'black',
+          }),
         };
       });
     });
@@ -116,28 +153,40 @@ export class BoardComponent {
       return {
         ...value,
         showMoves: true,
-        piece: { kind: 'tower', color: 'black' },
+        piece: new Piece({
+          kind: 'tower',
+          color: 'black',
+        }),
       };
     });
     this.board[6][3].update((value) => {
       return {
         ...value,
         showMoves: true,
-        piece: { kind: 'tower', color: 'black' },
+        piece: new Piece({
+          kind: 'tower',
+          color: 'black',
+        }),
       };
     });
     this.board[6][5].update((value) => {
       return {
         ...value,
         selected: true,
-        piece: { kind: 'tower', color: 'black' },
+        piece: new Piece({
+          kind: 'tower',
+          color: 'black',
+        }),
       };
     });
     this.board[6][6].update((value) => {
       return {
         ...value,
         selected: true,
-        piece: { kind: 'tower', color: 'black' },
+        piece: new Piece({
+          kind: 'tower',
+          color: 'black',
+        }),
       };
     });
   }

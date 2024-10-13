@@ -17,8 +17,10 @@ import { IPiece } from '@interfaces/board.types';
 })
 export class PieceComponent {
   public piece = input.required<IPiece>();
+
   public imgSrc = computed(() => {
     const color = this.piece().color === 'black' ? 'b' : 'w';
     return `assets/images/pieces/${this.piece().kind}-${color}.svg`;
   });
+
 }

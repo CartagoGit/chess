@@ -1,4 +1,5 @@
 import { cols, rows } from '@constants/board.constants';
+import { Piece } from '@models/piece.model';
 
 export type IColor = 'black' | 'white';
 
@@ -13,15 +14,21 @@ export type IKindPiece =
 export type ICol = (typeof cols)[number];
 export type IRow = (typeof rows)[number];
 
+export interface IPosition {
+  col: ICol;
+  row: IRow;
+}
+
 export interface IPiece {
   kind: IKindPiece;
   color: IColor;
+  isMoved?: boolean;
 }
 
 export interface ICell {
   col: ICol;
   row: IRow;
-  piece: null | IPiece;
+  piece: null | Piece;
   color: IColor;
   showMoves: boolean;
   selected: boolean;
