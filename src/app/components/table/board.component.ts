@@ -37,14 +37,18 @@ export class BoardComponent {
     },
   );
 
-  public selectedCell: WritableSignal<ICell> | null = null;
+  public selectedCell = computed(() => {
+    return this.board.flat().find((cell) => cell().selected);
+  });
+
   public selectedPiece = computed(() => {
-    return this.selectedCell?.().piece;
-  })
+    const cell = this.selectedCell();
+    return cell?.().piece;
+  });
 
   constructor() {
     this.newMatch();
-    this._testHighlihtAndSelect();
+    // this._testHighlihtAndSelect();
     this.permutTable();
   }
 
@@ -141,32 +145,54 @@ export class BoardComponent {
   }
 
   public onSelectCell(cellSelected: WritableSignal<ICell>): void {
-    // Si no se selecciona una celda con pieza o ya estaba seleccionada la misma celda, se deselecciona la celda seleccionada previamente
-    if (cellSelected().piece === null || this.selectedCell === cellSelected) {
-      this.selectedCell?.update((value) => {
+    const { col: cellCol, row: cellRow } = cellSelected();
+    const { col: selectedCol, row: selectedRow } =
+      this.selectedCell()?.() ?? {};
+    const areSame = cellCol === selectedCol && cellRow === selectedRow;
+    const finalPosPiece = cellSelected().piece; // TODO Hacer que si es del color contrario no se pueda seleccionar
+    const selectedPiece = this.selectedPiece();
+
+    // Si el sitio donde seleccionamos es un movimiento posible, se mueve la pieza
+    // if (cellSelected().showMoves && selectedPiece) {
+    if (selectedPiece && selectedPiece.color !== finalPosPiece?.color) {
+      this.selectedCell()?.update((value) => {
         return {
           ...value,
+          piece: null,
           selected: false,
         };
       });
-      this.selectedCell = null;
+      console.log('Moviendo pieza', selectedPiece);
+      cellSelected.update((value) => {
+        selectedPiece.onMove();
+        return {
+          ...value,
+          piece: selectedPiece,
+        };
+      });
       return;
     }
 
-    // Si hay una celda seleccionada previamente, se deselecciona. Y se selecciona la celda seleccionada
-    this.selectedCell?.update((value) => {
+    // Pase lo que pase vamos a querer deseleccionar si hay alguna celda seleccionada previamente
+    this.selectedCell()?.update((value) => {
       return {
         ...value,
         selected: false,
       };
     });
-    cellSelected.update((value) => {
-      return {
-        ...value,
-        selected: !value.selected,
-      };
-    });
-    this.selectedCell = cellSelected;
+
+    // Si no hay pieza en la celda seleccionada, no hacemos nada
+    if (!finalPosPiece) return;
+
+    // Si no es la misma celda, seleccionamos la celda
+    if (!areSame) {
+      cellSelected.update((value) => {
+        return {
+          ...value,
+          selected: true,
+        };
+      });
+    }
   }
 
   public permutTable() {

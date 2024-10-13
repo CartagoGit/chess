@@ -52,4 +52,8 @@ export class Piece implements IPiece {
   private getKingMovements() {
     return [];
   }
+
+  public onMove() {
+    this.isMoved = true;
+  }
 }
