@@ -21,11 +21,10 @@ html {
 body {
   > :first-child {
     background-color: var(--background);
-    width: 100vw;
     min-height: 100vh;
     display: grid;
-    place-items: center;
     padding: 1rem;
+    box-sizing: border-box;
   }
 }
 

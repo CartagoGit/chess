@@ -1,22 +1,17 @@
 :host {
-  height: 100%;
-  max-height: 100%;
-  max-width: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
   padding: 1rem 0;
+  box-sizing: border-box;
 }
 
 .table {
-  flex-grow: 1;
   max-width: 100%;
   max-height: 100%;
   aspect-ratio: 1 / 1;
   min-height: var(--min-table-size);
   min-width: var(--min-table-size);
   border-radius: var(--br);
-  flex-grow: 100%;
   gap: 0;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -26,7 +21,6 @@
 .cell {
   display: flex;
   position: relative;
-  // flex-grow: 1;
   aspect-ratio: 1 / 1;
   min-width: var(--min-cell-size);
   min-height: var(--min-cell-size);
