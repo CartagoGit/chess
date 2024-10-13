@@ -109,18 +109,18 @@
 .rounded {
   &-top {
     &-left {
-      border-radius: var(--br-top) 0 0 0;
+      border-radius: var(--br) 0 0 0;
     }
     &-right {
-      border-radius: 0 var(--br-top) 0 0;
+      border-radius: 0 var(--br) 0 0;
     }
   }
   &-bottom {
     &-left {
-      border-radius: 0 0 0 var(--br-bottom);
+      border-radius: 0 0 0 var(--br);
     }
     &-right {
-      border-radius: 0 0 var(--br-bottom) 0;
+      border-radius: 0 0 var(--br) 0;
     }
   }
 }

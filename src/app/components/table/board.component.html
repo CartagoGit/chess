@@ -9,7 +9,8 @@
         @let isFirstRow = rowIndex === 0;
         @let isFirstCol = colIndex === 0;
         @let piece = cellData.piece;
-        <span class="cell__wrapper">
+        <span class="cell__wrapper"
+        [class]="'cell__wrapper-' + (cellData.col + cellData.row).toUpperCase()">
           @if (piece) {
             <chess-piece [piece]="piece" class="piece" />
           }
@@ -17,12 +18,12 @@
             class="cell"
             [class]="'cell-' + (cellData.col + cellData.row).toUpperCase()"
             [ngClass]="{
-              'cell--white': cellColor === 'white',
-              'cell--black': cellColor === 'black',
               'rounded-top-left': isFirstRow && isFirstCol,
               'rounded-top-right': isFirstRow && isLastCol,
               'rounded-bottom-left': isLastRow && isFirstCol,
               'rounded-bottom-right': isLastRow && isLastCol,
+              'cell--white': cellColor === 'white',
+              'cell--black': cellColor === 'black',
               'cell--selected': cellData.selected,
               'cell--highlight': cellData.showMoves,
             }"
