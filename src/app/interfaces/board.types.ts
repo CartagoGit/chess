@@ -21,6 +21,6 @@ export interface IPiece {
 export interface ICell {
   col: ICol;
   row: IRow;
-  piece: IPiece | null;
+  piece: null | IPiece;
   color: IColor;
 }

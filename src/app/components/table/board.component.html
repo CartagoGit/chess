@@ -1,16 +1,18 @@
 <div class="wrapper-table">
   <div class="table">
-    @for (row of board; let rowIndex = $index; track row[0].row) {
-      @for (cell of row; let colIndex = $index; track cell.col) {
-        @let cellColor = cell.color;
+    @for (row of board; let rowIndex = $index; track row[0]().row) {
+      @for (cell of row; let colIndex = $index; track cell().col) {
+        @let cellData = cell();
+        @let cellColor = cellData.color;
         @let isLastRow = rowIndex === board.length - 1;
         @let isLastCol = colIndex === row.length - 1;
         @let isFirstRow = rowIndex === 0;
         @let isFirstCol = colIndex === 0;
+        @let piece = cellData.piece;
 
         <span
           class="cell"
-          [class]="'cell-' + (cell.col + cell.row).toUpperCase()"
+          [class]="'cell-' + (cellData.col + cellData.row).toUpperCase()"
           [ngClass]="{
             'cell-white': cellColor === 'white',
             'cell-black': cellColor === 'black',
@@ -28,7 +30,7 @@
                 'text-white': cellColor === 'black',
               }"
             >
-              {{ cell.row }}
+              {{ cellData.row }}
             </span>
           }
           @if (isLastRow) {
@@ -39,8 +41,12 @@
                 'text-white': cellColor === 'black',
               }"
             >
-              {{ cell.col }}
+              {{ cellData.col }}
             </span>
+          }
+     
+          @if (piece) {
+            <chess-piece [piece]="piece" />
           }
         </span>
       }

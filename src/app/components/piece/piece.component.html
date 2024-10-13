@@ -1,1 +1,8 @@
-<p>piece works!</p>,
+@let pieceData = piece();
+<img
+  class="piece"
+  [src]="imgSrc()"
+  [alt]="'Piece ' + pieceData.kind + ' ' + pieceData.color"
+/>
+
+<!-- {{ imgSrc() }} -->
