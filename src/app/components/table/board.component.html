@@ -9,10 +9,37 @@
         @let isFirstRow = rowIndex === 0;
         @let isFirstCol = colIndex === 0;
         @let piece = cellData.piece;
-        <span class="cell__wrapper"
-        [class]="'cell__wrapper-' + (cellData.col + cellData.row).toUpperCase()">
+        <span
+          class="cell__wrapper"
+          [class]="
+            'cell__wrapper-' + (cellData.col + cellData.row).toUpperCase()
+          "
+          (click)="onSelectCell(cell)"
+        >
           @if (piece) {
             <chess-piece [piece]="piece" class="piece" />
+          }
+          @if (isLastCol) {
+            <span
+              class="coordinate coordinate--row"
+              [ngClass]="{
+                'coordinate--black': cellColor === 'white',
+                'coordinate--white': cellColor === 'black',
+              }"
+            >
+              {{ cellData.row }}
+            </span>
+          }
+          @if (isLastRow) {
+            <span
+              class="coordinate coordinate--col"
+              [ngClass]="{
+                'coordinate--black': cellColor === 'white',
+                'coordinate--white': cellColor === 'black',
+              }"
+            >
+              {{ cellData.col }}
+            </span>
           }
           <span
             class="cell"
@@ -28,28 +55,6 @@
               'cell--highlight': cellData.showMoves,
             }"
           >
-            @if (isLastCol) {
-              <span
-                class="coordinate coordinate--row"
-                [ngClass]="{
-                  'coordinate--black': cellColor === 'white',
-                  'coordinate--white': cellColor === 'black',
-                }"
-              >
-                {{ cellData.row }}
-              </span>
-            }
-            @if (isLastRow) {
-              <span
-                class="coordinate coordinate--col"
-                [ngClass]="{
-                  'coordinate--black': cellColor === 'white',
-                  'coordinate--white': cellColor === 'black',
-                }"
-              >
-                {{ cellData.col }}
-              </span>
-            }
           </span>
         </span>
       }

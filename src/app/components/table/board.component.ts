@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   signal,
   WritableSignal,
 } from '@angular/core';
@@ -36,9 +37,15 @@ export class BoardComponent {
     },
   );
 
+  public selectedCell: WritableSignal<ICell> | null = null;
+  public selectedPiece = computed(() => {
+    return this.selectedCell?.().piece;
+  })
+
   constructor() {
     this.newMatch();
     this._testHighlihtAndSelect();
+    this.permutTable();
   }
 
   private _testHighlihtAndSelect() {
@@ -131,5 +138,38 @@ export class BoardComponent {
         });
       }
     }
+  }
+
+  public onSelectCell(cellSelected: WritableSignal<ICell>): void {
+    // Si no se selecciona una celda con pieza o ya estaba seleccionada la misma celda, se deselecciona la celda seleccionada previamente
+    if (cellSelected().piece === null || this.selectedCell === cellSelected) {
+      this.selectedCell?.update((value) => {
+        return {
+          ...value,
+          selected: false,
+        };
+      });
+      this.selectedCell = null;
+      return;
+    }
+
+    // Si hay una celda seleccionada previamente, se deselecciona. Y se selecciona la celda seleccionada
+    this.selectedCell?.update((value) => {
+      return {
+        ...value,
+        selected: false,
+      };
+    });
+    cellSelected.update((value) => {
+      return {
+        ...value,
+        selected: !value.selected,
+      };
+    });
+    this.selectedCell = cellSelected;
+  }
+
+  public permutTable() {
+    this.board = this.board.reverse();
   }
 }
