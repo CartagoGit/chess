@@ -5,4 +5,7 @@
   border: 3px solid var(--secondary);
   border-radius: var(--br);
   background-color: var(--primary);
+  max-height: var(--min-table-size);
+  overflow-y: auto;
+  align-self: center;
 }
