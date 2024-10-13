@@ -12,8 +12,8 @@ export class Piece implements IPiece {
     this.isMoved = isMoved;
   }
 
-  public getMovements(kindPiece: IKindPiece) {
-    switch (kindPiece) {
+  public getMovements() {
+    switch (this.kind) {
       case 'pawn':
         return this.getPawnMovements();
       case 'tower':

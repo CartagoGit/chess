@@ -6,7 +6,7 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { PieceComponent } from '@components/piece/piece.component';
-import { ICell } from '@interfaces/board.types';
+import { ICell, IKindPiece } from '@interfaces/board.types';
 import { Piece } from '@models/piece.model';
 import { cols, rows } from 'src/app/constants/board.constants';
 
@@ -37,157 +37,99 @@ export class BoardComponent {
   );
 
   constructor() {
-    this.board[0][0].update((value) => {
+    this.newMatch();
+    this._testHighlihtAndSelect();
+  }
+
+  private _testHighlihtAndSelect() {
+    this.board[4][2].update((value) => {
       return {
         ...value,
+        showMoves: true,
         piece: new Piece({
           kind: 'tower',
           color: 'black',
         }),
       };
     });
-    this.board[0][1].update((value) => {
+    this.board[4][3].update((value) => {
       return {
         ...value,
+        showMoves: true,
         piece: new Piece({
           kind: 'tower',
-          color: 'white',
-        }),
-      };
-    });
-    this.board[0][2].update((value) => {
-      return {
-        ...value,
-        piece: new Piece({
-          kind: 'horse',
           color: 'black',
         }),
       };
     });
-    this.board[0][3].update((value) => {
+    this.board[4][5].update((value) => {
       return {
         ...value,
+        selected: true,
         piece: new Piece({
-          kind: 'horse',
-          color: 'white',
-        }),
-      };
-    });
-    this.board[0][4].update((value) => {
-      return {
-        ...value,
-        piece: new Piece({
-          kind: 'bishop',
+          kind: 'tower',
           color: 'black',
         }),
       };
     });
-    this.board[0][5].update((value) => {
+    this.board[4][6].update((value) => {
       return {
         ...value,
+        selected: true,
         piece: new Piece({
-          kind: 'bishop',
-          color: 'white',
-        }),
-      };
-    });
-    this.board[0][6].update((value) => {
-      return {
-        ...value,
-        piece: new Piece({
-          kind: 'queen',
+          kind: 'tower',
           color: 'black',
         }),
       };
     });
-    this.board[0][7].update((value) => {
-      return {
-        ...value,
-        piece: new Piece({
-          kind: 'queen',
-          color: 'white',
-        }),
-      };
-    });
-    this.board[1].forEach((cell, index) => {
-      cell.update((value) => {
-        if ([0, 1].includes(index)) {
-          if (index % 2 === 0) {
+  }
+
+  public newMatch() {
+    const whitePiecesStartRow = [0, 1];
+    const blackPiecesStartRow = [7, 6];
+    const orderPieces: IKindPiece[] = [
+      'tower',
+      'horse',
+      'bishop',
+      'queen',
+      'king',
+      'bishop',
+      'horse',
+      'tower',
+    ];
+    for (let [indexRow, row] of this.board.entries()) {
+      for (let [indexCell, cell] of row.entries()) {
+        const isSpaceWithPiace = [whitePiecesStartRow, blackPiecesStartRow]
+          .flat()
+          .includes(indexRow);
+        if (!isSpaceWithPiace) {
+          cell.update((value) => {
             return {
               ...value,
-              piece: new Piece({
-                kind: 'king',
-                color: 'black',
-              }),
+              piece: null,
+              showMoves: false,
+              selected: false,
             };
-          } else {
-            return {
-              ...value,
-              piece: new Piece({
-                kind: 'king',
-                color: 'white',
-              }),
-            };
-          }
+          });
+          continue;
         }
-        if (index % 2 === 0) {
+        const color = whitePiecesStartRow.includes(indexRow)
+          ? 'white'
+          : 'black';
+        const kind =
+          indexRow === 0 || indexRow === 7 ? orderPieces[indexCell] : 'pawn';
+        cell.update((value) => {
           return {
             ...value,
+            showMoves: false,
+            selected: false,
             piece: new Piece({
-              kind: 'pawn',
-              color: 'white',
+              kind,
+              color,
             }),
           };
-        }
-        return {
-          ...value,
-          piece: new Piece({
-            kind: 'pawn',
-            color: 'black',
-          }),
-        };
-      });
-    });
-
-    this.board[6][2].update((value) => {
-      return {
-        ...value,
-        showMoves: true,
-        piece: new Piece({
-          kind: 'tower',
-          color: 'black',
-        }),
-      };
-    });
-    this.board[6][3].update((value) => {
-      return {
-        ...value,
-        showMoves: true,
-        piece: new Piece({
-          kind: 'tower',
-          color: 'black',
-        }),
-      };
-    });
-    this.board[6][5].update((value) => {
-      return {
-        ...value,
-        selected: true,
-        piece: new Piece({
-          kind: 'tower',
-          color: 'black',
-        }),
-      };
-    });
-    this.board[6][6].update((value) => {
-      return {
-        ...value,
-        selected: true,
-        piece: new Piece({
-          kind: 'tower',
-          color: 'black',
-        }),
-      };
-    });
+        });
+      }
+    }
   }
 }
