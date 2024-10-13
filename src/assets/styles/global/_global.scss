@@ -21,9 +21,8 @@ html {
 body {
   > :first-child {
     background-color: var(--background);
-    box-sizing: border-box;
-    width: 100%;
-    min-height: 100%;
+    width: 100vw;
+    min-height: 100vh;
     display: grid;
     place-items: center;
     padding: 1rem;
