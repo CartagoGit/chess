@@ -34,15 +34,22 @@
   justify-content: center;
   flex-wrap: wrap;
   width: 100%;
+  gap: 1rem;
 }
 
 .aside {
   box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   align-items: center;
   padding: 1rem;
   width: 300px;
-
+  flex-shrink: 1;
+  flex-grow: 0.2;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  float: right;
 }
 
 .footer {

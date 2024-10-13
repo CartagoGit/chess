@@ -8,4 +8,5 @@
   max-height: var(--min-table-size);
   overflow-y: auto;
   align-self: center;
+  scrollbar-gutter: stable both-edges;
 }
