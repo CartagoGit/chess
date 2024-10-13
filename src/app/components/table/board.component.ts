@@ -22,12 +22,15 @@ export class BoardComponent {
     { length: 8 },
     (_val, row) => {
       return Array.from({ length: 8 }, (_val, col) => {
-        return signal({
+        const cell: ICell = {
           col: cols[col],
           row: rows[row],
           piece: null,
           color: (row + col) % 2 === 0 ? 'black' : 'white',
-        });
+          showMoves: false,
+          selected: false,
+        };
+        return signal(cell);
       });
     },
   );
@@ -84,7 +87,6 @@ export class BoardComponent {
     this.board[1].forEach((cell, index) => {
       cell.update((value) => {
         if ([0, 1].includes(index)) {
-
           if (index % 2 === 0) {
             return {
               ...value,
@@ -108,6 +110,35 @@ export class BoardComponent {
           piece: { kind: 'pawn', color: 'black' },
         };
       });
+    });
+
+    this.board[6][2].update((value) => {
+      return {
+        ...value,
+        showMoves: true,
+        piece: { kind: 'tower', color: 'black' },
+      };
+    });
+    this.board[6][3].update((value) => {
+      return {
+        ...value,
+        showMoves: true,
+        piece: { kind: 'tower', color: 'black' },
+      };
+    });
+    this.board[6][5].update((value) => {
+      return {
+        ...value,
+        selected: true,
+        piece: { kind: 'tower', color: 'black' },
+      };
+    });
+    this.board[6][6].update((value) => {
+      return {
+        ...value,
+        selected: true,
+        piece: { kind: 'tower', color: 'black' },
+      };
     });
   }
 }

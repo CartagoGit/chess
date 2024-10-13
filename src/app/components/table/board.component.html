@@ -1,4 +1,4 @@
-<div class="wrapper-table">
+<div class="table__wrapper">
   <div class="table">
     @for (row of board; let rowIndex = $index; track row[0]().row) {
       @for (cell of row; let colIndex = $index; track cell().col) {
@@ -9,45 +9,47 @@
         @let isFirstRow = rowIndex === 0;
         @let isFirstCol = colIndex === 0;
         @let piece = cellData.piece;
-
-        <span
-          class="cell"
-          [class]="'cell-' + (cellData.col + cellData.row).toUpperCase()"
-          [ngClass]="{
-            'cell-white': cellColor === 'white',
-            'cell-black': cellColor === 'black',
-            'rounded-top-left': isFirstRow && isFirstCol,
-            'rounded-top-right': isFirstRow && isLastCol,
-            'rounded-bottom-left': isLastRow && isFirstCol,
-            'rounded-bottom-right': isLastRow && isLastCol,
-          }"
-        >
-          @if (isLastCol) {
-            <span
-              class="row-value"
-              [ngClass]="{
-                'text-black': cellColor === 'white',
-                'text-white': cellColor === 'black',
-              }"
-            >
-              {{ cellData.row }}
-            </span>
-          }
-          @if (isLastRow) {
-            <span
-              class="col-value"
-              [ngClass]="{
-                'text-black': cellColor === 'white',
-                'text-white': cellColor === 'black',
-              }"
-            >
-              {{ cellData.col }}
-            </span>
-          }
-     
+        <span class="cell__wrapper">
           @if (piece) {
-            <chess-piece [piece]="piece" />
+            <chess-piece [piece]="piece" class="piece" />
           }
+          <span
+            class="cell"
+            [class]="'cell-' + (cellData.col + cellData.row).toUpperCase()"
+            [ngClass]="{
+              'cell--white': cellColor === 'white',
+              'cell--black': cellColor === 'black',
+              'rounded-top-left': isFirstRow && isFirstCol,
+              'rounded-top-right': isFirstRow && isLastCol,
+              'rounded-bottom-left': isLastRow && isFirstCol,
+              'rounded-bottom-right': isLastRow && isLastCol,
+              'cell--selected': cellData.selected,
+              'cell--highlight': cellData.showMoves,
+            }"
+          >
+            @if (isLastCol) {
+              <span
+                class="coordinate coordinate--row"
+                [ngClass]="{
+                  'coordinate--black': cellColor === 'white',
+                  'coordinate--white': cellColor === 'black',
+                }"
+              >
+                {{ cellData.row }}
+              </span>
+            }
+            @if (isLastRow) {
+              <span
+                class="coordinate coordinate--col"
+                [ngClass]="{
+                  'coordinate--black': cellColor === 'white',
+                  'coordinate--white': cellColor === 'black',
+                }"
+              >
+                {{ cellData.col }}
+              </span>
+            }
+          </span>
         </span>
       }
     }
