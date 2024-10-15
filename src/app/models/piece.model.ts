@@ -5,51 +5,53 @@ export class Piece implements IPiece {
   public color: IColor;
   public isMoved?: boolean;
 
-  constructor(data: IPiece) {
+  constructor(data: IPiece | Piece) {
     const { kind, color, isMoved } = data;
     this.kind = kind;
     this.color = color;
     this.isMoved = isMoved;
   }
 
-  public getMovements() {
+  public movements() {
     switch (this.kind) {
       case 'pawn':
-        return this.getPawnMovements();
+        return this._getPawnMovements();
       case 'tower':
-        return this.getTowerMovements();
+        return this._getTowerMovements();
       case 'horse':
-        return this.getHorseMovements();
+        return this._getHorseMovements();
       case 'bishop':
-        return this.getBishopMovements();
+        return this._getBishopMovements();
       case 'queen':
-        return this.getQueenMovements();
+        return this._getQueenMovements();
       case 'king':
-        return this.getKingMovements();
+        return this._getKingMovements();
     }
   }
 
-  private getPawnMovements() {
+  
+
+  private _getPawnMovements() {
     return [];
   }
 
-  private getTowerMovements() {
+  private _getTowerMovements() {
     return [];
   }
 
-  private getHorseMovements() {
+  private _getHorseMovements() {
     return [];
   }
 
-  private getBishopMovements() {
+  private _getBishopMovements() {
     return [];
   }
 
-  private getQueenMovements() {
+  private _getQueenMovements() {
     return [];
   }
 
-  private getKingMovements() {
+  private _getKingMovements() {
     return [];
   }
 

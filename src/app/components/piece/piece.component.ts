@@ -5,7 +5,7 @@ import {
   computed,
   input,
 } from '@angular/core';
-import { IPiece } from '@interfaces/board.types';
+import { Piece } from '@models/piece.model';
 
 @Component({
   selector: 'chess-piece',
@@ -16,7 +16,7 @@ import { IPiece } from '@interfaces/board.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PieceComponent {
-  public piece = input.required<IPiece>();
+  public piece = input.required<Piece>();
 
   public imgSrc = computed(() => {
     const color = this.piece().color === 'black' ? 'b' : 'w';
