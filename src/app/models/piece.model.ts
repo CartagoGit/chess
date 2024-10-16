@@ -29,14 +29,18 @@ export class Piece implements IPiece {
     }
   }
 
-  
+
 
   private _getPawnMovements() {
-    return [];
+    return [
+
+    ];
   }
 
   private _getTowerMovements() {
-    return [];
+    return [
+      
+    ];
   }
 
   private _getHorseMovements() {
