@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { StateService } from 'src/app/services/state.service';
-import { MovementsComponent } from "../components/movements/movements.component";
+import { MovementsComponent } from "../components/movements-board/movements-board.component";
 import { BoardComponent } from "../components/table/board.component";
 import { PlayerComponent } from "../components/player/player.component";
 

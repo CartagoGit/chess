@@ -44,6 +44,7 @@
   position: relative;
   box-sizing: border-box;
   background-image: url('/assets/images/utils/wood-pattern.png');
+  background-size: contain;
   aspect-ratio: 1 / 1;
   min-width: var(--min-cell-size);
   min-height: var(--min-cell-size);

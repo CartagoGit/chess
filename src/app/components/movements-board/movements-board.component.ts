@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'chess-movements',
+  selector: 'chess-movements-board',
   standalone: true,
   imports: [
     CommonModule,
   ],
-  templateUrl: './movements.component.html',
-  styleUrl: './movements.component.scss',
+  templateUrl: './movements-board.component.html',
+  styleUrl: './movements-board.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovementsComponent { }

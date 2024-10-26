@@ -20,6 +20,7 @@ import { cols, rows } from 'src/app/constants/board.constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardComponent {
+  // ANCHOR Propierties
   public board: WritableSignal<ICell>[][] = Array.from(
     { length: 8 },
     (_val, row) => {
@@ -46,12 +47,18 @@ export class BoardComponent {
     return cell?.().piece;
   });
 
+  public boardVision = computed(() => {
+    return this.board.flat()[0]().color === 'black' ? 'black' : 'white';
+  });
+
+  // ANCHOR Constructor
   constructor() {
     this.newMatch();
     // this._testHighlihtAndSelect();
     this.permutTable();
   }
 
+  // ANCHOR Methods
   private _testHighlihtAndSelect() {
     this.board[4][2].update((value) => {
       return {
