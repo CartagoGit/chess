@@ -1,15 +1,12 @@
-import { IColor, IKindPiece, IPiece } from '@interfaces/board.types';
+import { IColor, IKindPiece, IPiece, IPosition } from '@interfaces/board.types';
 
 export class Piece implements IPiece {
-  public kind: IKindPiece;
-  public color: IColor;
+  public kind!: IKindPiece;
+  public color!: IColor;
   public isMoved?: boolean;
 
   constructor(data: IPiece | Piece) {
-    const { kind, color, isMoved } = data;
-    this.kind = kind;
-    this.color = color;
-    this.isMoved = isMoved;
+    Object.assign(this, data);
   }
 
   public movements() {
@@ -29,18 +26,12 @@ export class Piece implements IPiece {
     }
   }
 
-
-
   private _getPawnMovements() {
-    return [
-
-    ];
+    return [];
   }
 
   private _getTowerMovements() {
-    return [
-      
-    ];
+    return [];
   }
 
   private _getHorseMovements() {

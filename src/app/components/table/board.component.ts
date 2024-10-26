@@ -54,7 +54,7 @@ export class BoardComponent {
   // ANCHOR Constructor
   constructor() {
     this.newMatch();
-    // this._testHighlihtAndSelect();
+    this._testHighlihtAndSelect();
     this.permutTable();
   }
 
@@ -202,6 +202,7 @@ export class BoardComponent {
     }
   }
 
+  // Cambia la tabla de posición para vista del jugador
   public permutTable() {
     this.board = this.board.reverse();
   }
