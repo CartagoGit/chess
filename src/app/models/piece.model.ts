@@ -263,14 +263,14 @@ export class Piece implements IPiece {
   private _hasOpponentPiece(position: IPosition): boolean {
     const { col, row } = position;
     const cell = this.board[rows.indexOf(row)]?.[cols.indexOf(col)];
-    if (!cell().piece) return false;
+    if (!cell?.().piece) return false;
     return cell().piece?.color !== this.color;
   }
 
   private _hasSameColorPiece(position: IPosition): boolean {
     const { col, row } = position;
     const cell = this.board[rows.indexOf(row)]?.[cols.indexOf(col)];
-    if (!cell().piece) return false;
+    if (!cell?.().piece) return false;
     return cell().piece?.color === this.color;
   }
 
