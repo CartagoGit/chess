@@ -158,7 +158,6 @@ export class BoardComponent {
         });
       }
     }
-    this.board[0][4]().piece?.movements;
   }
 
   public onSelectCell(cellSelected: WritableSignal<ICell>): void {
@@ -170,7 +169,13 @@ export class BoardComponent {
     const selectedPiece = this.selectedPiece();
 
     // Si el sitio donde seleccionamos es un movimiento posible, se mueve la pieza
-    if (selectedPiece && selectedPiece.color !== finalPosPiece?.color) {
+    if (
+      selectedPiece &&
+      selectedPiece.color !== finalPosPiece?.color &&
+      this.possiblePositionsMoves()?.some(
+        (pos) => pos.col === cellCol && pos.row === cellRow,
+      )
+    ) {
       this.selectedCell()?.update((value) => {
         return {
           ...value,
