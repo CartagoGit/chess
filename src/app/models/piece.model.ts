@@ -61,9 +61,14 @@ export class Piece implements IPiece {
     // 2. Move two cells forward in initial position
     for (let i = 1; i <= 2; i++) {
       const next = rows.indexOf(row) + direction * i;
-      if (this._hasOpponentPiece({ col, row: rows[next] })) break;
+      const newPosition = { col, row: rows[next] };
+      if (
+        this._hasOpponentPiece(newPosition) ||
+        this._hasSameColorPiece(newPosition)
+      )
+        break;
       if (i === 2 && !isInitialPosition) break;
-      positions.push({ col, row: rows[next] });
+      positions.push(newPosition);
     }
 
     // 3. Capture a piece
@@ -80,11 +85,43 @@ export class Piece implements IPiece {
     // TODO
     // REVIEW
 
+    // Finally remove positions where there is a piece of the same color
+
     return positions;
   }
 
   private _getTowerMovements(): IPosition[] {
-    return [];
+    let positions: IPosition[] = [];
+    const position = this.position();
+    if (!position) return [];
+    const { col, row } = position;
+
+    // Possibilities in tower
+    // 1. Move up
+    for (let i = rows.indexOf(row) + 1; i < rows.length; i++) {
+      const newPosition = { col, row: rows[i] };
+      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+        break;
+    }
+    // 2. Move right
+    for (let i = cols.indexOf(col) + 1; i < cols.length; i++) {
+      const newPosition = { col: cols[i], row };
+      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+        break;
+    }
+    // 3. Move down
+    for (let i = rows.indexOf(row) - 1; i >= 0; i--) {
+      const newPosition = { col, row: rows[i] };
+      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+        break;
+    }
+    // 4. Move left
+    for (let i = cols.indexOf(col) - 1; i >= 0; i--) {
+      const newPosition = { col: cols[i], row };
+      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+        break;
+    }
+    return positions;
   }
 
   private _getHorseMovements(): IPosition[] {
@@ -92,15 +129,85 @@ export class Piece implements IPiece {
   }
 
   private _getBishopMovements(): IPosition[] {
-    return [];
+    let positions: IPosition[] = [];
+    const position = this.position();
+    if (!position) return [];
+    const { col, row } = position;
+
+    // Possibilities in Bishop
+    // 1. Move up-left
+    for (
+      let i = rows.indexOf(row) + 1, j = cols.indexOf(col) - 1;
+      i < rows.length;
+      i++, j--
+    ) {
+      const newPosition = { col: cols[j], row: rows[i] };
+      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+        break;
+    }
+    // 2. Move up-right
+    for (
+      let i = rows.indexOf(row) + 1, j = cols.indexOf(col) + 1;
+      i < rows.length;
+      i++, j++
+    ) {
+      const newPosition = { col: cols[j], row: rows[i] };
+      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+        break;
+    }
+    // 3. Move down-right
+    for (
+      let i = rows.indexOf(row) - 1, j = cols.indexOf(col) + 1;
+      i < rows.length;
+      i--, j++
+    ) {
+      const newPosition = { col: cols[j], row: rows[i] };
+      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+        break;
+    }
+    // 4. Move down-left
+    for (
+      let i = rows.indexOf(row) - 1, j = cols.indexOf(col) - 1;
+      i < rows.length;
+      i--, j--
+    ) {
+      const newPosition = { col: cols[j], row: rows[i] };
+      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+        break;
+    }
+    return positions;
   }
 
   private _getQueenMovements(): IPosition[] {
-    return [];
+    return [...this._getTowerMovements(), ...this._getBishopMovements()];
   }
 
   private _getKingMovements(): IPosition[] {
-    return [];
+    let positions: IPosition[] = [];
+    const position = this.position();
+    if (!position) return [];
+    const { col, row } = position;
+
+    // Possibilities in King
+    const possibilities = [
+      { col: cols[cols.indexOf(col) + 1], row: rows[rows.indexOf(row) + 1] },
+      { col: cols[cols.indexOf(col) + 1], row },
+      { col: cols[cols.indexOf(col) + 1], row: rows[rows.indexOf(row) - 1] },
+      { col, row: rows[rows.indexOf(row) + 1] },
+      { col, row: rows[rows.indexOf(row) - 1] },
+      { col: cols[cols.indexOf(col) - 1], row: rows[rows.indexOf(row) + 1] },
+      { col: cols[cols.indexOf(col) - 1], row },
+      { col: cols[cols.indexOf(col) - 1], row: rows[rows.indexOf(row) - 1] },
+    ];
+
+    for (let newPosition of possibilities) {
+      this._isBreakIterableOrAssignPosition({ positions, newPosition });
+    }
+
+    // TODO
+    // REVIEW sitios donde el rey no puede moverse por jaque
+
+    return positions;
   }
 
   public onMove() {
@@ -111,12 +218,36 @@ export class Piece implements IPiece {
   private _hasOpponentPiece(position: IPosition): boolean {
     const { col, row } = position;
     const cell = this.board[rows.indexOf(row)][cols.indexOf(col)];
-    console.log({
-      result: cell().piece?.color !== this.color,
-      cellColor: cell().piece?.color,
-      pieceColor: this.color,
-    });
     if (!cell().piece) return false;
     return cell().piece?.color !== this.color;
+  }
+
+  private _hasSameColorPiece(position: IPosition): boolean {
+    const { col, row } = position;
+    const cell = this.board[rows.indexOf(row)][cols.indexOf(col)];
+    if (!cell().piece) return false;
+    return cell().piece?.color === this.color;
+  }
+
+  private _isOutOfBoard(position: IPosition): boolean {
+    const { col, row } = position;
+    return !cols.includes(col) || !rows.includes(row);
+  }
+
+  // Funcion to refactor same code, check the position in direction, if is the same color return true, if is opponent return true and add the position to the array
+  private _isBreakIterableOrAssignPosition(data: {
+    positions: IPosition[];
+    newPosition: IPosition;
+  }): boolean {
+    const { positions, newPosition } = data;
+
+    if (this._isOutOfBoard(newPosition) || this._hasSameColorPiece(newPosition))
+      return true;
+    if (this._hasOpponentPiece(newPosition)) {
+      positions.push(newPosition);
+      return true;
+    }
+    positions.push(newPosition);
+    return false;
   }
 }
