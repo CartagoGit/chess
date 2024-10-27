@@ -2,12 +2,10 @@ import { computed, Signal, WritableSignal } from '@angular/core';
 import { cols, rows } from '@constants/board.constants';
 import {
   ICell,
-  ICol,
   IColor,
   IKindPiece,
   IPiece,
   IPosition,
-  IRow,
 } from '@interfaces/board.types';
 
 export class Piece implements IPiece {
@@ -125,7 +123,28 @@ export class Piece implements IPiece {
   }
 
   private _getHorseMovements(): IPosition[] {
-    return [];
+    let positions: IPosition[] = [];
+    const position = this.position();
+    if (!position) return [];
+    const { col, row } = position;
+
+    // Possibilities in horse
+    const possibilities = [
+      { col: cols[cols.indexOf(col) + 2], row: rows[rows.indexOf(row) + 1] },
+      { col: cols[cols.indexOf(col) + 2], row: rows[rows.indexOf(row) - 1] },
+      { col: cols[cols.indexOf(col) - 2], row: rows[rows.indexOf(row) + 1] },
+      { col: cols[cols.indexOf(col) - 2], row: rows[rows.indexOf(row) - 1] },
+      { col: cols[cols.indexOf(col) + 1], row: rows[rows.indexOf(row) + 2] },
+      { col: cols[cols.indexOf(col) + 1], row: rows[rows.indexOf(row) - 2] },
+      { col: cols[cols.indexOf(col) - 1], row: rows[rows.indexOf(row) + 2] },
+      { col: cols[cols.indexOf(col) - 1], row: rows[rows.indexOf(row) - 2] },
+    ];
+
+    for (let newPosition of possibilities) {
+      this._isBreakIterableOrAssignPosition({ positions, newPosition });
+    }
+
+    return positions;
   }
 
   private _getBishopMovements(): IPosition[] {
@@ -203,7 +222,33 @@ export class Piece implements IPiece {
     for (let newPosition of possibilities) {
       this._isBreakIterableOrAssignPosition({ positions, newPosition });
     }
-
+    // REVIEW Enrroque corto y largo
+    // 2. Castling
+    const isWhite = this.color === 'white';
+    if (!this.isMoved) {
+      // 2.1. Short castling
+      // TODO Chequear que no haya piezas amenazando el camino
+      const towerShort = this.board[isWhite ? 0 : 7][7]().piece;
+      if (towerShort && !towerShort.isMoved) {
+        const areThereSomePiecesBetween = this.board[isWhite ? 0 : 7]
+          .slice(5, 7)
+          .some((cell) => cell().piece);
+        if (!areThereSomePiecesBetween) {
+          positions.push({ col: cols[cols.indexOf(col) + 2], row });
+        }
+      }
+      // 2.2 Long castling
+      // TODO Chequear que no haya piezas amenazando el camino
+      const towerLong = this.board[isWhite ? 0 : 7][0]().piece;
+      if (towerLong && !towerLong.isMoved) {
+        const areThereSomePiecesBetween = this.board[isWhite ? 0 : 7]
+          .slice(1, 4)
+          .some((cell) => cell().piece);
+        if (!areThereSomePiecesBetween) {
+          positions.push({ col: cols[cols.indexOf(col) - 2], row });
+        }
+      }
+    }
     // TODO
     // REVIEW sitios donde el rey no puede moverse por jaque
 
