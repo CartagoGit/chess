@@ -48,6 +48,23 @@
   aspect-ratio: 1 / 1;
   min-width: var(--min-cell-size);
   min-height: var(--min-cell-size);
+  &:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: transparent;
+    border-radius: 50%;
+    opacity: 0.2;
+    transform: translate(
+      -50%,
+      -50%
+      );
+      width: 80%;
+      height: 80%;
+      border: 3px solid transparent;
+      transition: border 0.2s;
+  }
   &--black {
     background-color: var(--black-cell);
     &.cell {
@@ -56,22 +73,7 @@
         // outline-offset: -3px;
         position: relative;
         &:before {
-          content: "";
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 50%; /* Ajusta el tamaño del círculo */
-          height: 50%;
-          background-color: transparent;
           border: 3px solid var(--white-cell); /* Borde del círculo */
-          border-radius: 50%;
-          opacity: 0.2;
-          transform: translate(
-            -50%,
-            -50%
-          ); /* Centra el círculo dentro del elemento */
-          width: 80%;
-          height: 80%;
         }
       }
       &--selected {
@@ -87,22 +89,7 @@
         // outline-offset: -3px;
         position: relative;
         &:before {
-          content: "";
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 50%; /* Ajusta el tamaño del círculo */
-          height: 50%;
-          background-color: transparent;
           border: 3px solid var(--black-cell); /* Borde del círculo */
-          border-radius: 50%;
-          opacity: 0.2;
-          transform: translate(
-            -50%,
-            -50%
-          ); /* Centra el círculo dentro del elemento */
-          width: 80%;
-          height: 80%;
         }
       }
       &--selected {
