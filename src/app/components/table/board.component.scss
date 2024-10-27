@@ -43,7 +43,7 @@
   display: flex;
   position: relative;
   box-sizing: border-box;
-  background-image: url('/assets/images/utils/wood-pattern.png');
+  background-image: url("/assets/images/utils/wood-pattern.png");
   background-size: contain;
   aspect-ratio: 1 / 1;
   min-width: var(--min-cell-size);
@@ -52,8 +52,27 @@
     background-color: var(--black-cell);
     &.cell {
       &--highlight {
-        outline: 3px dotted var(--white-cell);
-        outline-offset: -3px;
+        // outline: 3px dotted var(--white-cell);
+        // outline-offset: -3px;
+        position: relative;
+        &:before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 50%; /* Ajusta el tamaño del círculo */
+          height: 50%;
+          background-color: transparent;
+          border: 3px solid var(--white-cell); /* Borde del círculo */
+          border-radius: 50%;
+          opacity: 0.2;
+          transform: translate(
+            -50%,
+            -50%
+          ); /* Centra el círculo dentro del elemento */
+          width: 80%;
+          height: 80%;
+        }
       }
       &--selected {
         filter: brightness(1.7);
@@ -64,12 +83,30 @@
     background-color: var(--white-cell);
     &.cell {
       &--highlight {
-        outline: 3px dotted var(--black-cell);
-        outline-offset: -3px;
+        // outline: 3px dotted var(--black-cell);
+        // outline-offset: -3px;
+        position: relative;
+        &:before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 50%; /* Ajusta el tamaño del círculo */
+          height: 50%;
+          background-color: transparent;
+          border: 3px solid var(--black-cell); /* Borde del círculo */
+          border-radius: 50%;
+          opacity: 0.2;
+          transform: translate(
+            -50%,
+            -50%
+          ); /* Centra el círculo dentro del elemento */
+          width: 80%;
+          height: 80%;
+        }
       }
       &--selected {
         filter: brightness(0.6) contrast(3);
-
       }
     }
   }
