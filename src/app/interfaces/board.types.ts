@@ -1,3 +1,4 @@
+import { WritableSignal } from '@angular/core';
 import { cols, rows } from '@constants/board.constants';
 import { Piece } from '@models/piece.model';
 
@@ -22,6 +23,7 @@ export interface IPosition {
 export interface IPiece {
   kind: IKindPiece;
   color: IColor;
+  board: WritableSignal<ICell>[][];
   isMoved?: boolean;
 }
 

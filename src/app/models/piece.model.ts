@@ -10,8 +10,8 @@ import {
 export class Piece implements IPiece {
   public kind!: IKindPiece;
   public color!: IColor;
+  public board!: WritableSignal<ICell>[][];
   public isMoved?: boolean;
-  public board: WritableSignal<ICell>[][]
 
   constructor(data: IPiece | Piece) {
     Object.assign(this, data);
@@ -30,8 +30,6 @@ export class Piece implements IPiece {
   }
 
   private _getPawnMovements(): IPosition[] {
-    // Posicionamos el tablero para que el color de la pieza siempre sea ir hacia arriba
-    const boardInPosition = [...board].reverse();
     return [];
   }
 

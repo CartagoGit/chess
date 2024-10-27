@@ -7,8 +7,9 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { PieceComponent } from '@components/piece/piece.component';
-import { ICell, IKindPiece } from '@interfaces/board.types';
+import { ICell, IColor, IKindPiece } from '@interfaces/board.types';
 import { Piece } from '@models/piece.model';
+import { StateService } from '@services/state.service';
 import { cols, rows } from 'src/app/constants/board.constants';
 
 @Component({
@@ -38,6 +39,8 @@ export class BoardComponent {
     },
   );
 
+  private _initBoard = this.board.map((row) => row.map((cell) => cell()));
+
   public selectedCell = computed(() => {
     return this.board.flat().find((cell) => cell().selected);
   });
@@ -47,15 +50,16 @@ export class BoardComponent {
     return cell?.().piece;
   });
 
-  public boardVision = computed(() => {
-    return this.board.flat()[0]().color === 'black' ? 'black' : 'white';
+  public boardPerspectiveColor = signal<IColor>('black');
+
+  public boardPerspective = computed(() => {
+    return this.boardPerspectiveColor() === 'white' ? this.board.reverse() : this.board;
   });
 
   // ANCHOR Constructor
-  constructor() {
+  constructor(private _stateService: StateService) {
     this.newMatch();
     this._testHighlihtAndSelect();
-    this.permutTable();
   }
 
   // ANCHOR Methods
@@ -67,6 +71,7 @@ export class BoardComponent {
         piece: new Piece({
           kind: 'tower',
           color: 'black',
+          board: this.board,
         }),
       };
     });
@@ -77,6 +82,7 @@ export class BoardComponent {
         piece: new Piece({
           kind: 'tower',
           color: 'black',
+          board: this.board,
         }),
       };
     });
@@ -87,6 +93,7 @@ export class BoardComponent {
         piece: new Piece({
           kind: 'tower',
           color: 'black',
+          board: this.board,
         }),
       };
     });
@@ -97,6 +104,7 @@ export class BoardComponent {
         piece: new Piece({
           kind: 'tower',
           color: 'black',
+          board: this.board,
         }),
       };
     });
@@ -144,12 +152,13 @@ export class BoardComponent {
             piece: new Piece({
               kind,
               color,
+              board: this.board,
             }),
           };
         });
       }
     }
-    this.board[0][4]().piece?.movements
+    this.board[0][4]().piece?.movements;
   }
 
   public onSelectCell(cellSelected: WritableSignal<ICell>): void {
@@ -161,7 +170,6 @@ export class BoardComponent {
     const selectedPiece = this.selectedPiece();
 
     // Si el sitio donde seleccionamos es un movimiento posible, se mueve la pieza
-    // if (cellSelected().showMoves && selectedPiece) {
     if (selectedPiece && selectedPiece.color !== finalPosPiece?.color) {
       this.selectedCell()?.update((value) => {
         return {
@@ -201,10 +209,5 @@ export class BoardComponent {
         };
       });
     }
-  }
-
-  // Cambia la tabla de posición para vista del jugador
-  public permutTable() {
-    this.board = this.board.reverse();
   }
 }

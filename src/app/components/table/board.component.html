@@ -1,7 +1,10 @@
-
 <div class="table__wrapper">
   <div class="table">
-    @for (row of board; let rowIndex = $index; track row[0]().row) {
+    @for (
+      row of boardPerspective();
+      let rowIndex = $index;
+      track row[0]().row
+    ) {
       @for (cell of row; let colIndex = $index; track cell().col) {
         @let cellData = cell();
         @let cellColor = cellData.color;
