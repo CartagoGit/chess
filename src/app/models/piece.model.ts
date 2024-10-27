@@ -1,52 +1,57 @@
-import { IColor, IKindPiece, IPiece, IPosition } from '@interfaces/board.types';
+import { WritableSignal } from '@angular/core';
+import {
+  ICell,
+  IColor,
+  IKindPiece,
+  IPiece,
+  IPosition,
+} from '@interfaces/board.types';
 
 export class Piece implements IPiece {
   public kind!: IKindPiece;
   public color!: IColor;
   public isMoved?: boolean;
+  public board: WritableSignal<ICell>[][]
 
   constructor(data: IPiece | Piece) {
     Object.assign(this, data);
   }
 
   public movements() {
-    switch (this.kind) {
-      case 'pawn':
-        return this._getPawnMovements();
-      case 'tower':
-        return this._getTowerMovements();
-      case 'horse':
-        return this._getHorseMovements();
-      case 'bishop':
-        return this._getBishopMovements();
-      case 'queen':
-        return this._getQueenMovements();
-      case 'king':
-        return this._getKingMovements();
-    }
+    const movements = {
+      pawn: this._getPawnMovements(),
+      tower: this._getTowerMovements(),
+      horse: this._getHorseMovements(),
+      bishop: this._getBishopMovements(),
+      queen: this._getQueenMovements(),
+      king: this._getKingMovements(),
+    };
+    return movements[this.kind];
   }
 
-  private _getPawnMovements() {
+  private _getPawnMovements(): IPosition[] {
+    // Posicionamos el tablero para que el color de la pieza siempre sea ir hacia arriba
+    const boardInPosition = [...board].reverse();
     return [];
   }
 
-  private _getTowerMovements() {
+  private _getTowerMovements(): IPosition[] {
     return [];
   }
 
-  private _getHorseMovements() {
+  private _getHorseMovements(): IPosition[] {
     return [];
   }
 
-  private _getBishopMovements() {
+  private _getBishopMovements(): IPosition[] {
     return [];
   }
 
-  private _getQueenMovements() {
+  private _getQueenMovements(): IPosition[] {
     return [];
   }
 
-  private _getKingMovements() {
+  private _getKingMovements(): IPosition[] {
     return [];
   }
 

@@ -149,6 +149,7 @@ export class BoardComponent {
         });
       }
     }
+    this.board[0][4]().piece?.movements
   }
 
   public onSelectCell(cellSelected: WritableSignal<ICell>): void {
