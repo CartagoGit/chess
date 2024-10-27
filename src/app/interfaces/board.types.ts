@@ -32,6 +32,5 @@ export interface ICell {
   row: IRow;
   piece: null | Piece;
   color: IColor;
-  showMoves: boolean;
   selected: boolean;
 }

@@ -52,8 +52,8 @@
     background-color: var(--black-cell);
     &.cell {
       &--highlight {
-        outline: 4px dotted var(--white-cell);
-        outline-offset: -4px;
+        outline: 3px dotted var(--white-cell);
+        outline-offset: -3px;
       }
       &--selected {
         filter: brightness(1.7);
@@ -64,8 +64,8 @@
     background-color: var(--white-cell);
     &.cell {
       &--highlight {
-        outline: 4px dotted var(--black-cell);
-        outline-offset: -4px;
+        outline: 3px dotted var(--black-cell);
+        outline-offset: -3px;
       }
       &--selected {
         filter: brightness(0.6) contrast(3);

@@ -9,13 +9,13 @@ import {
 import { PieceComponent } from '@components/piece/piece.component';
 import { ICell, IColor, IKindPiece } from '@interfaces/board.types';
 import { Piece } from '@models/piece.model';
-import { StateService } from '@services/state.service';
+import { HasPositionInArrayPipe } from '@pipes/hasPositionInArray.pipe';
 import { cols, rows } from 'src/app/constants/board.constants';
 
 @Component({
   selector: 'chess-board',
   standalone: true,
-  imports: [CommonModule, PieceComponent],
+  imports: [CommonModule, PieceComponent, HasPositionInArrayPipe],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,15 +31,12 @@ export class BoardComponent {
           row: rows[row],
           piece: null,
           color: (row + col) % 2 === 0 ? 'black' : 'white',
-          showMoves: false,
           selected: false,
         };
         return signal(cell);
       });
     },
   );
-
-  private _initBoard = this.board.map((row) => row.map((cell) => cell()));
 
   public selectedCell = computed(() => {
     return this.board.flat().find((cell) => cell().selected);
@@ -50,16 +47,23 @@ export class BoardComponent {
     return cell?.().piece;
   });
 
-  public boardPerspectiveColor = signal<IColor>('black');
+  // Desde que perspectiva se verá el tablero. Desde la perspectiva de las piezas negras o de las blancas. En principio será la del color del jugador, pero podría cambiar
+  public boardPerspectiveColor = signal<IColor>('white');
 
   public boardPerspective = computed(() => {
-    return this.boardPerspectiveColor() === 'white' ? this.board.reverse() : this.board;
+    return this.boardPerspectiveColor() === 'white'
+      ? [...this.board].reverse()
+      : this.board;
+  });
+
+  public possiblePositionsMoves = computed(() => {
+    return this.selectedPiece()?.movements();
   });
 
   // ANCHOR Constructor
-  constructor(private _stateService: StateService) {
+  constructor() {
     this.newMatch();
-    this._testHighlihtAndSelect();
+    // this._testHighlihtAndSelect();
   }
 
   // ANCHOR Methods
@@ -67,7 +71,6 @@ export class BoardComponent {
     this.board[4][2].update((value) => {
       return {
         ...value,
-        showMoves: true,
         piece: new Piece({
           kind: 'tower',
           color: 'black',
@@ -78,7 +81,6 @@ export class BoardComponent {
     this.board[4][3].update((value) => {
       return {
         ...value,
-        showMoves: true,
         piece: new Piece({
           kind: 'tower',
           color: 'black',
@@ -133,7 +135,6 @@ export class BoardComponent {
             return {
               ...value,
               piece: null,
-              showMoves: false,
               selected: false,
             };
           });
@@ -147,7 +148,6 @@ export class BoardComponent {
         cell.update((value) => {
           return {
             ...value,
-            showMoves: false,
             selected: false,
             piece: new Piece({
               kind,

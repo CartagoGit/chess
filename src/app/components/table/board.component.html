@@ -56,9 +56,15 @@
               'cell--white': cellColor === 'white',
               'cell--black': cellColor === 'black',
               'cell--selected': cellData.selected,
-              'cell--highlight': cellData.showMoves,
+              'cell--highlight': {
+                possiblePossitions: possiblePositionsMoves(),
+                position: {
+                  col: cellData.col,
+                  row: cellData.row
+                } } | hasPositionInArray,
             }"
           >
+            <!-- 'cell--highlight': cellData.showMoves, -->
           </span>
         </span>
       }
