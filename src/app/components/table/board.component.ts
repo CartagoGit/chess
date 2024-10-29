@@ -176,22 +176,7 @@ export class BoardComponent {
         (pos) => pos.col === cellCol && pos.row === cellRow,
       )
     ) {
-      this.selectedCell()?.update((value) => {
-        return {
-          ...value,
-          piece: null,
-          selected: false,
-        };
-      });
-      console.log('Moviendo pieza', selectedPiece);
-      cellSelected.update((value) => {
-        selectedPiece.onMove();
-        return {
-          ...value,
-          piece: selectedPiece,
-        };
-      });
-      return;
+      return this.onMovePiece(cellSelected);
     }
 
     // Pase lo que pase vamos a querer deseleccionar si hay alguna celda seleccionada previamente
@@ -214,5 +199,24 @@ export class BoardComponent {
         };
       });
     }
+  }
+
+  public onMovePiece(cellSelected: WritableSignal<ICell>): void {
+    const selectedPiece = this.selectedPiece()!;
+    this.selectedCell()?.update((value) => {
+      return {
+        ...value,
+        piece: null,
+        selected: false,
+      };
+    });
+    console.log('Moviendo pieza', selectedPiece);
+    cellSelected.update((value) => {
+      selectedPiece.onMove();
+      return {
+        ...value,
+        piece: selectedPiece,
+      };
+    });
   }
 }
