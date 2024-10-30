@@ -1,10 +1,9 @@
-<section class="white">
-  {{ whiteMoves() }}
-</section>
-<section class="black">
-  @for (move of blackMoves(); track $index) {
-    <article></article>
-  } @empty {
-    <span>Movements</span>
+{{ stateSvc.movements() | json }}
+
+@for (move of stateSvc.movements(); track $index) {
+  @if (move.color === "white") {
+    <span>{{ $index + 1 }}. {{ move.piece.color }}</span>
+  } @else if (move.color === "black") {
+    <span>{{ $index + 1 }}. {{ move.piece.color }}</span>
   }
-</section>
+}

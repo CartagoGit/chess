@@ -10,6 +10,7 @@ import { PieceComponent } from '@components/piece/piece.component';
 import { ICell, IColor, IKindPiece } from '@interfaces/board.types';
 import { Piece } from '@models/piece.model';
 import { HasPositionInArrayPipe } from '@pipes/hasPositionInArray.pipe';
+import { StateService } from '@services/state.service';
 import { cols, rows } from 'src/app/constants/board.constants';
 
 @Component({
@@ -61,7 +62,7 @@ export class BoardComponent {
   });
 
   // ANCHOR Constructor
-  constructor() {
+  constructor(private _stateSvc: StateService) {
     this.newMatch();
     // this._testHighlihtAndSelect();
   }
@@ -216,6 +217,19 @@ export class BoardComponent {
         ...value,
         piece: selectedPiece,
       };
+    });
+
+    // Añadimos el movimiento al historial
+    this._stateSvc.movements.update((movements) => {
+      return [
+        ...movements,
+        {
+          col: cellSelected().col,
+          row: cellSelected().row,
+          color: selectedPiece.color,
+          piece: selectedPiece,
+        },
+      ];
     });
   }
 }
