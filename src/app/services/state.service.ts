@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
+import { IMovement, IPosition } from '@interfaces/board.types';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +10,7 @@ export class StateService {
 
   // public playerColor = Math.random() > 0.5 ? 'white' : 'black';
 
+  public didMovements = signal<IMovement[]>([]);
 
   constructor() {}
 }

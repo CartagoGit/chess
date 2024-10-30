@@ -210,7 +210,6 @@ export class BoardComponent {
         selected: false,
       };
     });
-    console.log('Moviendo pieza', selectedPiece);
     cellSelected.update((value) => {
       selectedPiece.onMove();
       return {

@@ -1,2 +1,10 @@
-<span class="white"></span>
-<span class="black"></span>
+<section class="white">
+  {{ whiteMoves() }}
+</section>
+<section class="black">
+  @for (move of blackMoves(); track $index) {
+    <article></article>
+  } @empty {
+    <span>Movements</span>
+  }
+</section>
