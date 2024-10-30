@@ -1,9 +1,22 @@
-{{ stateSvc.movements() | json }}
-
-@for (move of stateSvc.movements(); track $index) {
-  @if (move.color === "white") {
-    <span>{{ $index + 1 }}. {{ move.piece.color }}</span>
-  } @else if (move.color === "black") {
-    <span>{{ $index + 1 }}. {{ move.piece.color }}</span>
+<header class="movements__header">
+  <span class="movements__item">White</span>
+  <span class="movements__item">Black</span>
+</header>
+<section class="movements__main">
+  @for (move of stateSvc.movements(); track $index) {
+    @if (move.color === "white") {
+      <article class="movements__item movements__white">
+        <span>{{ $index + 1 }}. {{ move.piece.color }}</span>
+      </article>
+    } @else if (move.color === "black") {
+      <article class="movements__item movements__black">
+        <span>{{ $index + 1 }}. {{ move.piece.color }}</span>
+      </article>
+    }
   }
-}
+</section>
+<footer class="movements__footer">
+  <button class="button__reset" (click)="stateSvc.movements.set([])">
+    New Game
+  </button>
+</footer>

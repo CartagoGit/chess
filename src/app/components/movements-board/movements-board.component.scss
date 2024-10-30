@@ -1,6 +1,5 @@
 :host {
   padding: 0.5rem 1rem;
-  overflow-y: auto;
   width: 100%;
   border: 3px solid var(--secondary);
   border-radius: var(--br);
@@ -9,4 +8,47 @@
   overflow-y: auto;
   align-self: center;
   scrollbar-gutter: stable both-edges;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
+
+  grid-template-rows: auto 1fr auto;
+
+  .movements {
+    &__header,
+    &__main {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-areas: "white black";
+      width: 100%;
+      gap: 1rem;
+    }
+
+    &__header {
+      grid-area: header;
+    }
+    &__main {
+      grid-area: main;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    &__footer {
+      grid-area: footer;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    &__white {
+      grid-area: white;
+    }
+    &__black {
+      grid-area: black;
+    }
+    &__item {
+      display: flex;
+    }
+  }
 }
