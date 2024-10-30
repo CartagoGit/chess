@@ -48,6 +48,7 @@
   aspect-ratio: 1 / 1;
   min-width: var(--min-cell-size);
   min-height: var(--min-cell-size);
+  transition: all ease 0.3s;
   &:before {
     content: "";
     position: absolute;
@@ -56,24 +57,19 @@
     background-color: transparent;
     border-radius: 50%;
     opacity: 0.2;
-    transform: translate(
-      -50%,
-      -50%
-      );
-      width: 80%;
-      height: 80%;
-      border: 3px solid transparent;
-      transition: border 0.2s;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    border: 3px solid transparent;
+    transition: border 0.3s;
   }
   &--black {
     background-color: var(--black-cell);
     &.cell {
       &--highlight {
-        // outline: 3px dotted var(--white-cell);
-        // outline-offset: -3px;
         position: relative;
         &:before {
-          border: 3px solid var(--white-cell); /* Borde del círculo */
+          border: 3px solid var(--white-cell);
         }
       }
       &--selected {
@@ -85,11 +81,9 @@
     background-color: var(--white-cell);
     &.cell {
       &--highlight {
-        // outline: 3px dotted var(--black-cell);
-        // outline-offset: -3px;
         position: relative;
         &:before {
-          border: 3px solid var(--black-cell); /* Borde del círculo */
+          border: 3px solid var(--black-cell);
         }
       }
       &--selected {
