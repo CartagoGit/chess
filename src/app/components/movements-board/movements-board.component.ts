@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { IMovement } from '@interfaces/board.types';
 import { StateService } from '@services/state.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'chess-movements-board',
