@@ -13,6 +13,10 @@
         <span>{{ $index + 1 }}. {{ move.piece.color }}</span>
       </article>
     }
+  } @empty {
+    <article class="movements__item movements__empty">
+      <span>No movements yet</span>
+    </article>
   }
 </section>
 <footer class="movements__footer">
