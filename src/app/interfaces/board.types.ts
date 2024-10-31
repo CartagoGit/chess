@@ -35,4 +35,7 @@ export interface ICell {
   selected: boolean;
 }
 
-export type IMovement = IPosition & { color: IColor; piece: IPiece };
+export type IMovement = IPosition & {
+  color: IColor;
+  piece: IPiece;
+};

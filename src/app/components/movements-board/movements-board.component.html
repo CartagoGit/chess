@@ -2,23 +2,27 @@
   <span class="movements__item">White</span>
   <span class="movements__item">Black</span>
 </header>
-<section class="movements__main">
-  @for (move of stateSvc.movements(); track $index) {
-    @if (move.color === "white") {
-      <article class="movements__item movements__white">
-        <span>{{ $index + 1 }}. {{ move.piece.color }}</span>
-      </article>
-    } @else if (move.color === "black") {
-      <article class="movements__item movements__black">
-        <span>{{ $index + 1 }}. {{ move.piece.color }}</span>
-      </article>
-    }
+<main class="movements__main">
+  @for (
+    move of stateSvc.movements();
+    track $index;
+    let index = $index, even = $even
+  ) {
+    <article
+      class="movements__item"
+      [ngClass]="{
+        movements__white: even,
+        movements__black: !even,
+      }"
+    >
+      <span>{{ index + 1 }}. {{ move.piece.color }}</span>
+    </article>
   } @empty {
     <article class="movements__item movements__empty">
       <span>No movements yet</span>
     </article>
   }
-</section>
+</main>
 <footer class="movements__footer">
   <button class="button__reset" (click)="stateSvc.movements.set([])">
     New Game

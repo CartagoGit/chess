@@ -228,6 +228,7 @@ export class BoardComponent {
           row: cellSelected().row,
           color: selectedPiece.color,
           piece: selectedPiece,
+          index: movements.length,
         },
       ];
     });
