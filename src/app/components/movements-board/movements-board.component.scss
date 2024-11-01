@@ -76,6 +76,32 @@
     &__item {
       display: inline-flex;
       align-items: end;
+      transition: all ease 0.3s;
+      padding: 0.1rem 0.5rem;
+      border-radius: 1rem;
+      &--clickable {
+        cursor: pointer;
+        &.movements {
+          &__white {
+            &:hover {
+              background-color: var(--white);
+              color: var(--black);
+              .movements__img {
+                filter: drop-shadow(0 0 0 white) drop-shadow(0 0 2px black);
+              }
+            }
+          }
+          &__black {
+            &:hover {
+              background-color: var(--black);
+              color: var(--white);
+              .movements__img {
+                filter: drop-shadow(0 0 0 white) drop-shadow(0 0 2px white);
+              }
+            }
+          }
+        }
+      }
     }
     &__empty {
       grid-column: 1 / -1;
