@@ -15,7 +15,16 @@
         movements__black: !even,
       }"
     >
-      <span>{{ index + 1 }}. {{ move.piece.color }}</span>
+      <span>{{ index + 1 }}. </span>
+      <span class="movements__img-wrapper">
+        <img
+          class="movements__img"
+          [src]="move.imgSrc"
+          [alt]="'Piece ' + move.piece.kind + ' ' + move.piece.color"
+        />
+      </span>
+      <span>{{ move.row | uppercase }}</span>
+      <span>{{ move.col | uppercase }}</span>
     </article>
   } @empty {
     <article class="movements__item movements__empty">
@@ -24,7 +33,7 @@
   }
 </main>
 <footer class="movements__footer">
-  <button class="button__reset" (click)="stateSvc.movements.set([])">
+  <button class="button__reset" (click)="newGame()">
     New Game
   </button>
 </footer>

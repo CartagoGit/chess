@@ -44,8 +44,9 @@
       max-height: 100%;
       grid-area: main;
       gap: 1rem;
+      row-gap: 0.5rem;
       overflow: auto;
-      &:has(.movements__empty){
+      &:has(.movements__empty) {
         height: 100%;
         align-items: center;
       }
@@ -57,6 +58,15 @@
       justify-content: center;
       gap: 1rem;
     }
+    &__img {
+      height: 1.5rem;
+      &-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      }
+    }
     &__white {
       grid-column: 1;
     }
@@ -64,8 +74,8 @@
       grid-column: 2;
     }
     &__item {
-      display: flex;
-      // height: 2rem;
+      display: inline-flex;
+      align-items: end;
     }
     &__empty {
       grid-column: 1 / -1;

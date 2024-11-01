@@ -11,6 +11,7 @@ import { ICell, IColor, IKindPiece } from '@interfaces/board.types';
 import { Piece } from '@models/piece.model';
 import { HasPositionInArrayPipe } from '@pipes/hasPositionInArray.pipe';
 import { StateService } from '@services/state.service';
+import { Subscription } from 'rxjs';
 import { cols, rows } from 'src/app/constants/board.constants';
 
 @Component({
@@ -61,13 +62,27 @@ export class BoardComponent {
     return this.selectedPiece()?.movements();
   });
 
+  private _subscriptions: Subscription[] = [];
+
   // ANCHOR Constructor
   constructor(private _stateSvc: StateService) {
     this.newMatch();
+    this._makeSubscriptions();
     // this._testHighlihtAndSelect();
   }
 
+  ngOnDestroy(): void {
+    this._subscriptions.forEach((sub) => !sub?.closed && sub.unsubscribe());
+  }
+
   // ANCHOR Methods
+  private _makeSubscriptions(): void {
+    const subNewMatch = this._stateSvc.newMatch$.subscribe(() =>
+      this.newMatch(),
+    );
+    this._subscriptions.push(subNewMatch);
+  }
+
   private _testHighlihtAndSelect() {
     this.board[4][2].update((value) => {
       return {
@@ -221,6 +236,8 @@ export class BoardComponent {
 
     // Añadimos el movimiento al historial
     this._stateSvc.movements.update((movements) => {
+      const color = selectedPiece.color === 'black' ? 'b' : 'w';
+      const imgSrc = `assets/images/pieces/${selectedPiece.kind}-${color}.svg`;
       return [
         ...movements,
         {
@@ -229,6 +246,7 @@ export class BoardComponent {
           color: selectedPiece.color,
           piece: selectedPiece,
           index: movements.length,
+          imgSrc,
         },
       ];
     });

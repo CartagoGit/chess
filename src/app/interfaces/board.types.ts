@@ -38,4 +38,5 @@ export interface ICell {
 export type IMovement = IPosition & {
   color: IColor;
   piece: IPiece;
+  imgSrc: string;
 };

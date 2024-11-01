@@ -53,4 +53,11 @@ export class MovementsComponent {
     );
     this._subscriptions.push(subMovements);
   }
+
+  public newGame() : void {
+    this.stateSvc.newMatch$.next();
+    this.stateSvc.movements.set([])
+  }
+
+
 }
