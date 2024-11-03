@@ -57,6 +57,7 @@ export class MovementsComponent {
   public newGame() : void {
     this.stateSvc.newMatch$.next();
     this.stateSvc.movements.set([])
+    this.stateSvc.isTurnWhite.set(true)
   }
 
 
