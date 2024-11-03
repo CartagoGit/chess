@@ -9,6 +9,8 @@ export class StateService {
   public readonly title = `Cartago's Chess`;
   public readonly footer = `© 2024 Cartago Nova`;
 
+  public isTurnWhite = signal<boolean>(true);
+
   public newMatch$ = new BehaviorSubject<void>(undefined);
   // public playerColor = Math.random() > 0.5 ? 'white' : 'black';
 

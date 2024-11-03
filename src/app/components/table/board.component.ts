@@ -49,6 +49,13 @@ export class BoardComponent {
     return cell?.().piece;
   });
 
+  public isTurnPiece = computed(() => {
+    const selectedPiece = this.selectedPiece();
+    if (!selectedPiece) return false;
+    const turnColor: IColor = this._stateSvc.isTurnWhite() ? 'white' : 'black';
+    return selectedPiece.color === turnColor;
+  });
+
   // Desde que perspectiva se verá el tablero. Desde la perspectiva de las piezas negras o de las blancas. En principio será la del color del jugador, pero podría cambiar
   public boardPerspectiveColor = signal<IColor>('white');
 
@@ -218,6 +225,7 @@ export class BoardComponent {
   }
 
   public onMovePiece(cellSelected: WritableSignal<ICell>): void {
+    if (!this.isTurnPiece()) return;
     const selectedPiece = this.selectedPiece()!;
     this.selectedCell()?.update((value) => {
       return {
@@ -233,6 +241,8 @@ export class BoardComponent {
         piece: selectedPiece,
       };
     });
+
+    this._stateSvc.isTurnWhite.update((isTurnWhite) => !isTurnWhite);
 
     // Añadimos el movimiento al historial
     this._stateSvc.movements.update((movements) => {

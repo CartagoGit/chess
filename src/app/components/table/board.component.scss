@@ -49,25 +49,10 @@
   min-width: var(--min-cell-size);
   min-height: var(--min-cell-size);
   transition: all ease 0.3s;
-  &:before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    background-color: transparent;
-    border-radius: 50%;
-    opacity: 0.3;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 80%;
-    border: 3px solid transparent;
-    transition: border 0.3s;
-  }
   &--black {
     background-color: var(--black-cell);
     &.cell {
       &--highlight {
-        position: relative;
         &:before {
           border: 3px solid var(--white-cell);
         }
@@ -81,13 +66,61 @@
     background-color: var(--white-cell);
     &.cell {
       &--highlight {
-        position: relative;
         &:before {
           border: 3px solid var(--black-cell);
         }
       }
       &--selected {
         filter: brightness(0.6) contrast(3);
+      }
+    }
+  }
+  &:before,
+  &:after {
+    border: 3px solid transparent;
+    transition: border 0.3s;
+  }
+  &--highlight {
+    position: relative;
+
+    &:before,
+    &:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 80%;
+    }
+    &:not(.cell--not-turn-piece) {
+      &::before {
+        background-color: transparent;
+        border-radius: 50%;
+        opacity: 0.3;
+        transform: translate(-50%, -50%);
+        width: 80%;
+      }
+      &:after {
+        background-color: transparent;
+        display: none;
+      }
+    }
+    &.cell--not-turn-piece {
+      &:before,
+      &:after {
+        opacity: 1;
+        border: none;
+        content: "";
+        width: 4px;
+        background-color: var(--red-600);
+        border-radius: 3px;
+      }
+
+      &:before {
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+
+      &:after {
+        transform: translate(-50%, -50%) rotate(-45deg);
       }
     }
   }

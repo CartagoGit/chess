@@ -13,6 +13,7 @@
         @let isFirstRow = rowIndex === 0;
         @let isFirstCol = colIndex === 0;
         @let piece = cellData.piece;
+        @let isTurn = isTurnPiece();
         <span
           class="cell__wrapper"
           [class]="
@@ -49,6 +50,7 @@
             class="cell"
             [class]="'cell-' + (cellData.col + cellData.row).toUpperCase()"
             [ngClass]="{
+              'cell--not-turn-piece': !isTurn,
               'rounded-top-left': isFirstRow && isFirstCol,
               'rounded-top-right': isFirstRow && isLastCol,
               'rounded-bottom-left': isLastRow && isFirstCol,
