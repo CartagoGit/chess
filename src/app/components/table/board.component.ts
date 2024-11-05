@@ -7,7 +7,7 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { PieceComponent } from '@components/piece/piece.component';
-import { ICell, IColor, IKindPiece } from '@interfaces/board.types';
+import { ICell, IColor, IKindPiece, IPosition } from '@interfaces/board.types';
 import { Piece } from '@models/piece.model';
 import { HasPositionInArrayPipe } from '@pipes/hasPositionInArray.pipe';
 import { StateService } from '@services/state.service';
@@ -225,8 +225,11 @@ export class BoardComponent {
   }
 
   public onMovePiece(cellSelected: WritableSignal<ICell>): void {
-    if (!this.isTurnPiece()) return;
+    // if (!this.isTurnPiece()) return;
+    // REVIEW REACTIVAR CUANDO SE TERMINEN DE CONFIGURAR TODOS LOS MOVIMIENTOS
     const selectedPiece = this.selectedPiece()!;
+    // Check Castling Moves
+    this._checkCastlingMoves(cellSelected);
     this.selectedCell()?.update((value) => {
       return {
         ...value,
@@ -242,6 +245,7 @@ export class BoardComponent {
       };
     });
 
+    // Cambiamos el color del turno
     this._stateSvc.isTurnWhite.update((isTurnWhite) => !isTurnWhite);
 
     // Añadimos el movimiento al historial
@@ -259,6 +263,34 @@ export class BoardComponent {
           imgSrc,
         },
       ];
+    });
+  }
+
+  // Chequea si se mueve el rey en un enrroque para mover la torre correspondiente
+  public _checkCastlingMoves(cellSelected: WritableSignal<ICell>) {
+    const selectedPiece = this.selectedPiece()!;
+    // Si la pieza no es el rey no se puede enrrocar
+    // No se chequea si hay piezas intermedias porque eso ya se ha checkeado en los posibles movimientos del rey.
+    if (selectedPiece.kind !== 'king' || selectedPiece.isMoved) return;
+    const isWhitePiece = selectedPiece.color === 'white';
+    const { col } = cellSelected();
+    const isShortCastling = cols.indexOf(col) === 6;
+    const towerCol = isShortCastling ? 7 : 0;
+    const towerRow = isWhitePiece ? 0 : 7;
+    const towerCell = this.board[towerRow][towerCol];
+    const piece = towerCell().piece;
+    towerCell.update((value) => {
+      return {
+        ...value,
+        piece: null,
+      };
+    });
+    this.board[towerRow][isShortCastling ? 5 : 3].update((value) => {
+      piece?.onMove();
+      return {
+        ...value,
+        piece,
+      };
     });
   }
 }
