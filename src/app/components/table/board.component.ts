@@ -11,7 +11,7 @@ import { ICell, IColor, IKindPiece, IPosition } from '@interfaces/board.types';
 import { Piece } from '@models/piece.model';
 import { HasPositionInArrayPipe } from '@pipes/hasPositionInArray.pipe';
 import { StateService } from '@services/state.service';
-import { Subscription } from 'rxjs';
+import { fromEventPattern, Subscription } from 'rxjs';
 import { cols, rows } from 'src/app/constants/board.constants';
 
 @Component({
@@ -67,65 +67,16 @@ export class BoardComponent {
   });
 
   public possiblePositionsMoves = computed(() => {
-    return this.selectedPiece()?.movements();
+    const selectedPiece = this.selectedPiece();
+    if (!selectedPiece) return [];
+    if (selectedPiece.kind === 'king') {
+      const enemyMoves = this._getEnemyMoves(selectedPiece.color);
+      const kingMoves = selectedPiece.movements();
+      return kingMoves.filter((move) => !enemyMoves[`${move.col}${move.row}`]);
+      // REVIEW - Se ha chequeado simplemente si el movimiento de los enemigos coincide con el movimiento del rey. Pero realmente no habria que ver los movimientos, si no las posibles amenazas. Por ejemplo, el peon puede mover de frente, pero amenaza en diagonal
+    }
+    return selectedPiece.movements();
   });
-
-  // public pieces = computed(() => {
-  //   console.log('pieces');
-  //   const pieces = this.board.flat().reduce(
-  //     (acc, cell) => {
-  //       if (!cell()?.piece) return acc;
-  //       const color = cell().piece!.color;
-  //       acc[color].push(cell().piece!);
-  //       return acc;
-  //     },
-  //     {
-  //       white: [] as Piece[],
-  //       black: [] as Piece[],
-  //     },
-  //   );
-  //   return pieces;
-  // });
-
-  // public kingPieces = computed(() => {
-  //   console.log('kingPieces');
-  //   return {
-  //     white: this.pieces().white.find((piece) => piece.kind === 'king')!,
-  //     black: this.pieces().black.find((piece) => piece.kind === 'king')!,
-  //   };
-  // });
-
-  // Comprueba si alguna de las casillas donde podria mover el rey, son amenazadas por alguna pieza del oponente
-  // public notPossibleKingMoves = computed(() => {
-  //   const result: {
-  //     white: IPosition[];
-  //     black: IPosition[];
-  //   } = {
-  //     white: [],
-  //     black: [],
-  //   };
-
-  //   for (let king of Object.values(this.kingPieces())) {
-  //     const enemyPieces = this.pieces()[king.color];
-
-  //     for (let kingMove of king.movements()) {
-  //       console.log({ kingMove });
-  //       const isThreatened = enemyPieces.some((piece) =>
-  //         piece
-  //           .movements()
-  //           .some(
-  //             (pieceMove) =>
-  //               pieceMove.col === kingMove.col &&
-  //               pieceMove.row === kingMove.row,
-  //           ),
-  //       );
-  //       if (!isThreatened) continue;
-  //       result[king.color].push(kingMove);
-  //     }
-  //   }
-  //   console.log({ result });
-  //   return result;
-  // });
 
   private _subscriptions: Subscription[] = [];
 
@@ -352,5 +303,20 @@ export class BoardComponent {
         piece,
       };
     });
+  }
+
+  private _getEnemyMoves(pieceColor: IColor) {
+    const enemyColor = pieceColor === 'white' ? 'black' : 'white';
+    const result: Record<string, boolean> = {};
+    for (let cell$ of this.board.flat()) {
+      const cell = cell$();
+      if (!cell.piece || cell.piece.color !== enemyColor) continue;
+      const piece = cell.piece!;
+
+      piece.movements().forEach((movement) => {
+        result[`${movement.col}${movement.row}`] = true;
+      });
+    }
+    return result;
   }
 }

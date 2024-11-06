@@ -230,7 +230,6 @@ export class Piece implements IPiece {
     for (let newPosition of possibilities) {
       this._isBreakIterableOrAssignPosition({ positions, newPosition });
     }
-    console.log('KING', { positions, _enemyMovements: this._enemyMovements() });
 
     // REVIEW Enrroque corto y largo
     // 2. Castling
@@ -306,29 +305,5 @@ export class Piece implements IPiece {
     }
     positions.push(newPosition);
     return false;
-  }
-
-  // // Comprueba si es posible que el rey se mueva a la posición sin ser amenazado
-  // private _checkKingMovementIsSafe(position: IPosition): boolean {
-  //   if (this.kind !== 'king') return true;
-  //   const enemyMovements = this._enemyMovements();
-  //   return !enemyMovements[`${position.col}${position.row}`];
-  // }
-
-  // Metodo que recupera los movimientos posibles de las piezas enemigas
-  private _enemyMovements(): Record<string, boolean> {
-    const enemyColor = this.color === 'white' ? 'black' : 'white';
-    const result: Record<string, boolean> = {};
-    console.log(this.board.flat());
-    for (let cell$ of this.board.flat()) {
-      const cell = cell$();
-      if (!cell.piece || cell.piece.color !== enemyColor) continue;
-      const piece = cell.piece!;
-
-      piece.movements().forEach((movement) => {
-        result[`${movement.col}${movement.row}`] = true;
-      });
-    }
-    return result;
   }
 }
