@@ -49,6 +49,7 @@ export class BoardComponent {
     return cell?.().piece;
   });
 
+  // Chequea si es el turno de la pieza seleccionada
   public isTurnPiece = computed(() => {
     const selectedPiece = this.selectedPiece();
     if (!selectedPiece) return false;
@@ -67,6 +68,20 @@ export class BoardComponent {
 
   public possiblePositionsMoves = computed(() => {
     return this.selectedPiece()?.movements();
+  });
+
+  // Comprueba si alguna de las casillas donde podria mover el rey, son amenazadas por alguna pieza del oponente
+  public notPossibleKingMoves = computed(() => {
+    const result: {
+      white: IPosition[];
+      black: IPosition[];
+    } = {
+      white: [],
+      black: [],
+    };
+    this.board.flat().filter((cell) => cell().piece?.kind === 'king')!;
+
+    return;
   });
 
   private _subscriptions: Subscription[] = [];
