@@ -70,62 +70,62 @@ export class BoardComponent {
     return this.selectedPiece()?.movements();
   });
 
-  public pieces = computed(() => {
-    console.log('pieces');
-    const pieces = this.board.flat().reduce(
-      (acc, cell) => {
-        if (!cell()?.piece) return acc;
-        const color = cell().piece!.color;
-        acc[color].push(cell().piece!);
-        return acc;
-      },
-      {
-        white: [] as Piece[],
-        black: [] as Piece[],
-      },
-    );
-    return pieces;
-  });
+  // public pieces = computed(() => {
+  //   console.log('pieces');
+  //   const pieces = this.board.flat().reduce(
+  //     (acc, cell) => {
+  //       if (!cell()?.piece) return acc;
+  //       const color = cell().piece!.color;
+  //       acc[color].push(cell().piece!);
+  //       return acc;
+  //     },
+  //     {
+  //       white: [] as Piece[],
+  //       black: [] as Piece[],
+  //     },
+  //   );
+  //   return pieces;
+  // });
 
-  public kingPieces = computed(() => {
-    console.log('kingPieces');
-    return {
-      white: this.pieces().white.find((piece) => piece.kind === 'king')!,
-      black: this.pieces().black.find((piece) => piece.kind === 'king')!,
-    };
-  });
+  // public kingPieces = computed(() => {
+  //   console.log('kingPieces');
+  //   return {
+  //     white: this.pieces().white.find((piece) => piece.kind === 'king')!,
+  //     black: this.pieces().black.find((piece) => piece.kind === 'king')!,
+  //   };
+  // });
 
   // Comprueba si alguna de las casillas donde podria mover el rey, son amenazadas por alguna pieza del oponente
-  public notPossibleKingMoves = computed(() => {
-    const result: {
-      white: IPosition[];
-      black: IPosition[];
-    } = {
-      white: [],
-      black: [],
-    };
+  // public notPossibleKingMoves = computed(() => {
+  //   const result: {
+  //     white: IPosition[];
+  //     black: IPosition[];
+  //   } = {
+  //     white: [],
+  //     black: [],
+  //   };
 
-    for (let king of Object.values(this.kingPieces())) {
-      const enemyPieces = this.pieces()[king.color];
+  //   for (let king of Object.values(this.kingPieces())) {
+  //     const enemyPieces = this.pieces()[king.color];
 
-      for (let kingMove of king.movements()) {
-        console.log({ kingMove });
-        const isThreatened = enemyPieces.some((piece) =>
-          piece
-            .movements()
-            .some(
-              (pieceMove) =>
-                pieceMove.col === kingMove.col &&
-                pieceMove.row === kingMove.row,
-            ),
-        );
-        if (!isThreatened) continue;
-        result[king.color].push(kingMove);
-      }
-    }
-    console.log({ result });
-    return result;
-  });
+  //     for (let kingMove of king.movements()) {
+  //       console.log({ kingMove });
+  //       const isThreatened = enemyPieces.some((piece) =>
+  //         piece
+  //           .movements()
+  //           .some(
+  //             (pieceMove) =>
+  //               pieceMove.col === kingMove.col &&
+  //               pieceMove.row === kingMove.row,
+  //           ),
+  //       );
+  //       if (!isThreatened) continue;
+  //       result[king.color].push(kingMove);
+  //     }
+  //   }
+  //   console.log({ result });
+  //   return result;
+  // });
 
   private _subscriptions: Subscription[] = [];
 
@@ -330,8 +330,10 @@ export class BoardComponent {
     // Si la pieza no es el rey no se puede enrrocar
     // No se chequea si hay piezas intermedias porque eso ya se ha checkeado en los posibles movimientos del rey.
     if (selectedPiece.kind !== 'king' || selectedPiece.isMoved) return;
-    const isWhitePiece = selectedPiece.color === 'white';
     const { col } = cellSelected();
+    const isWhitePiece = selectedPiece.color === 'white';
+    const isCastling = cols.indexOf(col) === 2 || cols.indexOf(col) === 6;
+    if (!isCastling) return;
     const isShortCastling = cols.indexOf(col) === 6;
     const towerCol = isShortCastling ? 7 : 0;
     const towerRow = isWhitePiece ? 0 : 7;

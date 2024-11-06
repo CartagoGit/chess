@@ -24,6 +24,36 @@ export class Piece implements IPiece {
     return { col, row };
   });
 
+  // Si no es un rey no necesitamos los movimientos enemigos, si es un rey, calculamos para poder saber si se puede mover a una posición o esta amenazada
+  private _enemyMovements: Signal<{ [key: string]: boolean } | null> = computed(
+    () => {
+      if (this.kind !== 'king') return null;
+      console.log(this.board.flat());
+      const pieces = this.board.flat().reduce(
+        (acc, cell) => {
+          if (!cell()?.piece) return acc;
+          const color = cell().piece!.color;
+          acc[color].push(cell().piece!);
+          return acc;
+        },
+        {
+          white: [] as Piece[],
+          black: [] as Piece[],
+        },
+      );
+      console.log({ pieces });
+
+      const enemyPieces = pieces[this.color === 'white' ? 'black' : 'white'];
+      let result: Record<string, boolean> = {};
+      enemyPieces.forEach((piece) => {
+        piece.movements().forEach((movement) => {
+          result[`${movement.col}${movement.row}`] = true;
+        });
+      });
+      return result;
+    },
+  );
+
   public isMoved?: boolean;
 
   constructor(data: IPiece | Piece) {
@@ -222,6 +252,7 @@ export class Piece implements IPiece {
     for (let newPosition of possibilities) {
       this._isBreakIterableOrAssignPosition({ positions, newPosition });
     }
+
     // REVIEW Enrroque corto y largo
     // 2. Castling
     const isWhite = this.color === 'white';
@@ -296,36 +327,10 @@ export class Piece implements IPiece {
     return false;
   }
 
-  private _getPiecesFromBoard(): {
-    white: Piece[];
-    black: Piece[];
-  } {
-    const pieces = this.board.flat().reduce(
-      (acc, cell) => {
-        if (!cell()?.piece) return acc;
-        const color = cell().piece!.color;
-        acc[color].push(cell().piece!);
-        return acc;
-      },
-      {
-        white: [] as Piece[],
-        black: [] as Piece[],
-      },
-    );
-    return pieces;
-  }
-
-  private _getEnemyMovements(): Record<string, boolean> {
-    const enemyPieces =
-      this._getPiecesFromBoard()[this.color === 'white' ? 'black' : 'white'];
-    let result: Record<string, boolean> = {};
-    enemyPieces.forEach((piece) => {
-      piece.movements().forEach((movement) => {
-        result[`${movement.col}${movement.row}`] = true;
-      });
-    });
-    return result;
-  }
-
-  private _checkKingMovementIsSafe(position: IPosition): boolean {}
+  // // Comprueba si es posible que el rey se mueva a la posición sin ser amenazado
+  // private _checkKingMovementIsSafe(position: IPosition): boolean {
+  //   if (this.kind !== 'king') return true;
+  //   const enemyMovements = this._enemyMovements();
+  //   return !enemyMovements[`${position.col}${position.row}`];
+  // }
 }
