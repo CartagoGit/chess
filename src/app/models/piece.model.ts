@@ -295,4 +295,37 @@ export class Piece implements IPiece {
     positions.push(newPosition);
     return false;
   }
+
+  private _getPiecesFromBoard(): {
+    white: Piece[];
+    black: Piece[];
+  } {
+    const pieces = this.board.flat().reduce(
+      (acc, cell) => {
+        if (!cell()?.piece) return acc;
+        const color = cell().piece!.color;
+        acc[color].push(cell().piece!);
+        return acc;
+      },
+      {
+        white: [] as Piece[],
+        black: [] as Piece[],
+      },
+    );
+    return pieces;
+  }
+
+  private _getEnemyMovements(): Record<string, boolean> {
+    const enemyPieces =
+      this._getPiecesFromBoard()[this.color === 'white' ? 'black' : 'white'];
+    let result: Record<string, boolean> = {};
+    enemyPieces.forEach((piece) => {
+      piece.movements().forEach((movement) => {
+        result[`${movement.col}${movement.row}`] = true;
+      });
+    });
+    return result;
+  }
+
+  private _checkKingMovementIsSafe(position: IPosition): boolean {}
 }
