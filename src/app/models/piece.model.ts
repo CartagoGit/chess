@@ -24,36 +24,6 @@ export class Piece implements IPiece {
     return { col, row };
   });
 
-  // Si no es un rey no necesitamos los movimientos enemigos, si es un rey, calculamos para poder saber si se puede mover a una posición o esta amenazada
-  private _enemyMovements: Signal<{ [key: string]: boolean } | null> = computed(
-    () => {
-      if (this.kind !== 'king') return null;
-      console.log(this.board.flat());
-      const pieces = this.board.flat().reduce(
-        (acc, cell) => {
-          if (!cell()?.piece) return acc;
-          const color = cell().piece!.color;
-          acc[color].push(cell().piece!);
-          return acc;
-        },
-        {
-          white: [] as Piece[],
-          black: [] as Piece[],
-        },
-      );
-      console.log({ pieces });
-
-      const enemyPieces = pieces[this.color === 'white' ? 'black' : 'white'];
-      let result: Record<string, boolean> = {};
-      enemyPieces.forEach((piece) => {
-        piece.movements().forEach((movement) => {
-          result[`${movement.col}${movement.row}`] = true;
-        });
-      });
-      return result;
-    },
-  );
-
   public isMoved?: boolean;
 
   constructor(data: IPiece | Piece) {
@@ -61,15 +31,16 @@ export class Piece implements IPiece {
   }
 
   public movements(): IPosition[] {
+    console.log('Movements', this.kind);
     const movements = {
-      pawn: this._getPawnMovements(),
-      tower: this._getTowerMovements(),
-      horse: this._getHorseMovements(),
-      bishop: this._getBishopMovements(),
-      queen: this._getQueenMovements(),
-      king: this._getKingMovements(),
+      pawn: () => this._getPawnMovements(),
+      tower: () => this._getTowerMovements(),
+      horse: () => this._getHorseMovements(),
+      bishop: () => this._getBishopMovements(),
+      queen: () => this._getQueenMovements(),
+      king: () => this._getKingMovements(),
     };
-    return movements[this.kind];
+    return movements[this.kind]();
   }
 
   private _getPawnMovements(): IPosition[] {
@@ -174,6 +145,7 @@ export class Piece implements IPiece {
       this._isBreakIterableOrAssignPosition({ positions, newPosition });
     }
 
+    console.log('HORSE', { positions });
     return positions;
   }
 
@@ -224,11 +196,17 @@ export class Piece implements IPiece {
       if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
         break;
     }
+    console.log('BISHOP', { positions });
     return positions;
   }
 
   private _getQueenMovements(): IPosition[] {
-    return [...this._getTowerMovements(), ...this._getBishopMovements()];
+    const positions = [
+      ...this._getTowerMovements(),
+      ...this._getBishopMovements(),
+    ];
+    console.log('QUEEN', { positions });
+    return positions;
   }
 
   private _getKingMovements(): IPosition[] {
@@ -252,6 +230,7 @@ export class Piece implements IPiece {
     for (let newPosition of possibilities) {
       this._isBreakIterableOrAssignPosition({ positions, newPosition });
     }
+    console.log('KING', { positions, _enemyMovements: this._enemyMovements() });
 
     // REVIEW Enrroque corto y largo
     // 2. Castling
@@ -261,9 +240,10 @@ export class Piece implements IPiece {
       // TODO Chequear que no haya piezas amenazando el camino
       const towerShort = this.board[isWhite ? 0 : 7][7]().piece;
       if (towerShort && !towerShort.isMoved) {
-        const areThereSomePiecesBetween = this.board[isWhite ? 0 : 7]
-          .slice(5, 7)
-          .some((cell) => cell().piece);
+        const cellsBetween = this.board[isWhite ? 0 : 7].slice(5, 7);
+        const areThereSomePiecesBetween = cellsBetween.some(
+          (cell) => cell().piece,
+        );
         if (!areThereSomePiecesBetween) {
           positions.push({ col: cols[cols.indexOf(col) + 2], row });
         }
@@ -272,9 +252,10 @@ export class Piece implements IPiece {
       // TODO Chequear que no haya piezas amenazando el camino
       const towerLong = this.board[isWhite ? 0 : 7][0]().piece;
       if (towerLong && !towerLong.isMoved) {
-        const areThereSomePiecesBetween = this.board[isWhite ? 0 : 7]
-          .slice(1, 4)
-          .some((cell) => cell().piece);
+        const cellsBetween = this.board[isWhite ? 0 : 7].slice(1, 4);
+        const areThereSomePiecesBetween = cellsBetween.some(
+          (cell) => cell().piece,
+        );
         if (!areThereSomePiecesBetween) {
           positions.push({ col: cols[cols.indexOf(col) - 2], row });
         }
@@ -333,4 +314,21 @@ export class Piece implements IPiece {
   //   const enemyMovements = this._enemyMovements();
   //   return !enemyMovements[`${position.col}${position.row}`];
   // }
+
+  // Metodo que recupera los movimientos posibles de las piezas enemigas
+  private _enemyMovements(): Record<string, boolean> {
+    const enemyColor = this.color === 'white' ? 'black' : 'white';
+    const result: Record<string, boolean> = {};
+    console.log(this.board.flat());
+    for (let cell$ of this.board.flat()) {
+      const cell = cell$();
+      if (!cell.piece || cell.piece.color !== enemyColor) continue;
+      const piece = cell.piece!;
+
+      piece.movements().forEach((movement) => {
+        result[`${movement.col}${movement.row}`] = true;
+      });
+    }
+    return result;
+  }
 }
