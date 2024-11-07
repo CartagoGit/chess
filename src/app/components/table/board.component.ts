@@ -7,7 +7,13 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { PieceComponent } from '@components/piece/piece.component';
-import { ICell, IColor, IKindPiece, IPosition } from '@interfaces/board.types';
+import {
+  IActionMove,
+  ICell,
+  IColor,
+  IKindPiece,
+  IPosition,
+} from '@interfaces/board.types';
 import { Piece } from '@models/piece.model';
 import { HasPositionInArrayPipe } from '@pipes/hasPositionInArray.pipe';
 import { StateService } from '@services/state.service';
@@ -74,9 +80,29 @@ export class BoardComponent {
       // En el caso del rey hay que comprobar si hay piezas que amenazando las posiciones posibles
       const enemyThreats = this._getEnemyThreats(selectedPiece.color);
       const kingMoves = selectedPiece.movements();
-      return kingMoves.filter(
-        (move) => !enemyThreats[`${move.col}${move.row}`],
-      );
+      return kingMoves.filter((move) => {
+        // !enemyThreats[`${move.col}${move.row}`]
+        const hasThreat = !!enemyThreats[`${move.col}${move.row}`];
+        if (hasThreat) return false;
+
+        // Check Castling Moves
+        const isCastling = move.isCastling;
+        if (!isCastling) return true;
+
+        // Calculate possible Castling
+        const isWhitePiece = selectedPiece.color === 'white';
+        const isShortCastling = cols.indexOf(move.col) === 6;
+        const towerCols = isShortCastling ? [4, 7] : [1, 5];
+        const cellsBetween = this.board[isWhitePiece ? 0 : 7].slice(
+          ...towerCols,
+        );
+        console.log({ cellsBetween });
+        const hasCastlingThreated = cellsBetween.some((cell$) => {
+          const cell = cell$();
+          return !!enemyThreats[`${cell.col}${cell.row}`];
+        });
+        return !hasCastlingThreated;
+      });
     }
     return selectedPiece.movements();
   });

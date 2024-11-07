@@ -20,6 +20,10 @@ export interface IPosition {
   row: IRow;
 }
 
+export type IActionMove = IPosition & {
+  isCastling?: boolean;
+};
+
 export interface IPiece {
   kind: IKindPiece;
   color: IColor;

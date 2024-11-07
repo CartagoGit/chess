@@ -1,6 +1,7 @@
 import { computed, Signal, WritableSignal } from '@angular/core';
 import { cols, rows } from '@constants/board.constants';
 import {
+  IActionMove,
   ICell,
   IColor,
   IKindPiece,
@@ -9,6 +10,7 @@ import {
 } from '@interfaces/board.types';
 
 export class Piece implements IPiece {
+  // ANCHOR : Propierties
   public kind!: IKindPiece;
   public color!: IColor;
   public board!: WritableSignal<ICell>[][];
@@ -26,12 +28,14 @@ export class Piece implements IPiece {
 
   public isMoved?: boolean;
 
+  // ANCHOR : Constructor
+
   constructor(data: IPiece | Piece) {
     Object.assign(this, data);
   }
 
-  public movements(): IPosition[] {
-    console.log('Movements', this.kind);
+  // ANCHOR : Methods
+  public movements(): IActionMove[] {
     const movements = {
       pawn: () => this._getPawnMovements(),
       tower: () => this._getTowerMovements(),
@@ -97,7 +101,7 @@ export class Piece implements IPiece {
   }
 
   // Comprueba las amenazas de un peón
-  private _getPawnThreats(options?: { checkOpponent: boolean }): IPosition[] {
+  private _getPawnThreats(options?: { checkOpponent: boolean }): IActionMove[] {
     const { checkOpponent = false } = options || {};
     const position = this.position();
     if (!position) return [];
@@ -119,7 +123,7 @@ export class Piece implements IPiece {
     return positions;
   }
 
-  private _getTowerMovements(options?: { isThreat: boolean }): IPosition[] {
+  private _getTowerMovements(options?: { isThreat: boolean }): IActionMove[] {
     const { isThreat = false } = options || {};
     let positions: IPosition[] = [];
     const position = this.position();
@@ -178,7 +182,7 @@ export class Piece implements IPiece {
     return positions;
   }
 
-  private _getHorseMovements(options?: { isThreat: boolean }): IPosition[] {
+  private _getHorseMovements(options?: { isThreat: boolean }): IActionMove[] {
     const { isThreat = false } = options || {};
     let positions: IPosition[] = [];
     const position = this.position();
@@ -204,12 +208,10 @@ export class Piece implements IPiece {
         checkSameColorPiece: !isThreat,
       });
     }
-
-    console.log('HORSE', { positions });
     return positions;
   }
 
-  private _getBishopMovements(options?: { isThreat: boolean }): IPosition[] {
+  private _getBishopMovements(options?: { isThreat: boolean }): IActionMove[] {
     const { isThreat = false } = options || {};
     let positions: IPosition[] = [];
     const position = this.position();
@@ -281,34 +283,32 @@ export class Piece implements IPiece {
       )
         break;
     }
-    console.log('BISHOP', { positions });
     return positions;
   }
 
-  private _getQueenMovements(options?: { isThreat: boolean }): IPosition[] {
+  private _getQueenMovements(options?: { isThreat: boolean }): IActionMove[] {
     const { isThreat = false } = options || {};
     const positions = [
       ...this._getTowerMovements({ isThreat }),
       ...this._getBishopMovements({ isThreat }),
     ];
-    console.log('QUEEN', { positions });
     return positions;
   }
 
-  private _getKingMovements(options?: { isThreat: boolean }): IPosition[] {
+  private _getKingMovements(options?: { isThreat: boolean }): IActionMove[] {
     const { isThreat = false } = options || {};
-    let positions: IPosition[] = [];
+    let positions: IActionMove[] = [];
     const position = this.position();
     if (!position) return [];
     const { col, row } = position;
 
     // Possibilities in King
-    const possibilities = [
+    const possibilities: IActionMove[] = [
       { col: cols[cols.indexOf(col) + 1], row: rows[rows.indexOf(row) + 1] },
       { col: cols[cols.indexOf(col) + 1], row },
       { col: cols[cols.indexOf(col) + 1], row: rows[rows.indexOf(row) - 1] },
       { col, row: rows[rows.indexOf(row) + 1] },
-      { col, row: rows[rows.indexOf(row) - 1] },
+      { col, row: rows[rows.indexOf(row) - 1]},
       { col: cols[cols.indexOf(col) - 1], row: rows[rows.indexOf(row) + 1] },
       { col: cols[cols.indexOf(col) - 1], row },
       { col: cols[cols.indexOf(col) - 1], row: rows[rows.indexOf(row) - 1] },
@@ -335,7 +335,11 @@ export class Piece implements IPiece {
           (cell) => cell().piece,
         );
         if (!areThereSomePiecesBetween) {
-          positions.push({ col: cols[cols.indexOf(col) + 2], row });
+          positions.push({
+            col: cols[cols.indexOf(col) + 2],
+            row,
+            isCastling: true,
+          });
         }
       }
       // 2.2 Long castling
@@ -347,7 +351,11 @@ export class Piece implements IPiece {
           (cell) => cell().piece,
         );
         if (!areThereSomePiecesBetween) {
-          positions.push({ col: cols[cols.indexOf(col) - 2], row });
+          positions.push({
+            col: cols[cols.indexOf(col) - 2],
+            row,
+            isCastling: true,
+          });
         }
       }
     }
