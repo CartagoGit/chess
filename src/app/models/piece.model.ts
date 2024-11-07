@@ -322,12 +322,10 @@ export class Piece implements IPiece {
       });
     }
 
-    // REVIEW Enrroque corto y largo
     // 2. Castling
     const isWhite = this.color === 'white';
     if (!this.isMoved) {
       // 2.1. Short castling
-      // TODO Chequear que no haya piezas amenazando el camino
       const towerShort = this.board[isWhite ? 0 : 7][7]().piece;
       if (towerShort && !towerShort.isMoved) {
         const cellsBetween = this.board[isWhite ? 0 : 7].slice(5, 7);
@@ -343,7 +341,6 @@ export class Piece implements IPiece {
         }
       }
       // 2.2 Long castling
-      // TODO Chequear que no haya piezas amenazando el camino
       const towerLong = this.board[isWhite ? 0 : 7][0]().piece;
       if (towerLong && !towerLong.isMoved) {
         const cellsBetween = this.board[isWhite ? 0 : 7].slice(1, 4);

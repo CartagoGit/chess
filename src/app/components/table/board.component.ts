@@ -72,7 +72,7 @@ export class BoardComponent {
       : this.board;
   });
 
-  // Movimientos posibles de la pieza seleccionada
+  // Movimientos posibles de la pieza seleccionada, filtrando las posibles amenazas
   public possiblePositionsMoves = computed(() => {
     const selectedPiece = this.selectedPiece();
     if (!selectedPiece) return [];
