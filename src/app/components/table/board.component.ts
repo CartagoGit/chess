@@ -305,7 +305,7 @@ export class BoardComponent {
     });
   }
 
-  private _getEnemyMoves(pieceColor: IColor) {
+  private _getEnemyMoves(pieceColor: IColor): Record<string, boolean> {
     const enemyColor = pieceColor === 'white' ? 'black' : 'white';
     const result: Record<string, boolean> = {};
     for (let cell$ of this.board.flat()) {
@@ -313,7 +313,7 @@ export class BoardComponent {
       if (!cell.piece || cell.piece.color !== enemyColor) continue;
       const piece = cell.piece!;
 
-      piece.movements().forEach((movement) => {
+      piece.threats().forEach((movement) => {
         result[`${movement.col}${movement.row}`] = true;
       });
     }

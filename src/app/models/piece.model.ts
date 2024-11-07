@@ -43,14 +43,27 @@ export class Piece implements IPiece {
     return movements[this.kind]();
   }
 
+  // Devuelve las amenazas de cada pieza
+  public threats(): IPosition[] {
+    const threats = {
+      pawn: () => this._getPawnThreats(),
+      tower: () => this._getTowerMovements(),
+      horse: () => this._getHorseMovements(),
+      bishop: () => this._getBishopMovements(),
+      queen: () => this._getQueenMovements(),
+      king: () => this._getKingMovements(),
+    };
+    return threats[this.kind]();
+  }
+
   private _getPawnMovements(): IPosition[] {
     let positions: IPosition[] = [];
     const position = this.position();
     if (!position) return [];
     const { col, row } = position;
     const isWhite = this.color === 'white';
-    const isInitialPosition = isWhite ? row === '2' : row === '7';
     const direction = isWhite ? 1 : -1;
+    const isInitialPosition = isWhite ? row === '2' : row === '7';
     // Chekc if nex row is out of table
     const nextRow = rows.indexOf(row) + direction;
     if (!rows[nextRow]) return [];
@@ -71,14 +84,8 @@ export class Piece implements IPiece {
     }
 
     // 3. Capture a piece
-    const leftCol = cols[cols.indexOf(col) - 1];
-    const rightCol = cols[cols.indexOf(col) + 1];
-    for (let col of [leftCol, rightCol]) {
-      if (!col) continue;
-      if (this._hasOpponentPiece({ col, row: rows[nextRow] })) {
-        positions.push({ col, row: rows[nextRow] });
-      }
-    }
+    const threats = this._getPawnThreats(true);
+    positions.push(...threats);
 
     // 4. Capture in passant
     // TODO
@@ -86,6 +93,28 @@ export class Piece implements IPiece {
 
     // Finally remove positions where there is a piece of the same color
 
+    return positions;
+  }
+
+  // Comprueba las amenazas de un peón
+  private _getPawnThreats(checkOpponent: boolean = false): IPosition[] {
+    const position = this.position();
+    if (!position) return [];
+    const { col, row } = position;
+    const leftCol = cols[cols.indexOf(col) - 1];
+    const rightCol = cols[cols.indexOf(col) + 1];
+    const isWhite = this.color === 'white';
+    const direction = isWhite ? 1 : -1;
+    const nextRow = rows.indexOf(row) + direction;
+    const positions: IPosition[] = [];
+    for (let col of [leftCol, rightCol]) {
+      if (!col) continue;
+      if (checkOpponent) {
+        if (this._hasOpponentPiece({ col, row: rows[nextRow] })) {
+          positions.push({ col, row: rows[nextRow] });
+        }
+      } else positions.push({ col, row: rows[nextRow] });
+    }
     return positions;
   }
 
