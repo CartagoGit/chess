@@ -295,6 +295,7 @@ export class Piece implements IPiece {
     return positions;
   }
 
+  // Marca la pieza como movida
   public onMove() {
     this.isMoved = true;
   }
@@ -307,6 +308,7 @@ export class Piece implements IPiece {
     return cell().piece?.color !== this.color;
   }
 
+  // Comprueba si una posición tiene una pieza del mismo color
   private _hasSameColorPiece(position: IPosition): boolean {
     const { col, row } = position;
     const cell = this.board[rows.indexOf(row)]?.[cols.indexOf(col)];
@@ -314,6 +316,7 @@ export class Piece implements IPiece {
     return cell().piece?.color === this.color;
   }
 
+  // Comprueba si una posicion está fuera del tablero
   private _isOutOfBoard(position: IPosition): boolean {
     const { col, row } = position;
     return !cols.includes(col) || !rows.includes(row);
@@ -323,11 +326,13 @@ export class Piece implements IPiece {
   private _isBreakIterableOrAssignPosition(data: {
     positions: IPosition[];
     newPosition: IPosition;
+    checkOpponent?: boolean;
   }): boolean {
-    const { positions, newPosition } = data;
+    const { positions, newPosition, checkOpponent = true } = data;
 
     if (this._isOutOfBoard(newPosition) || this._hasSameColorPiece(newPosition))
       return true;
+    // REVIEW En el caso de las amenazas hay que comprobar tambien si se puede o no comer la pieza enemiga
     if (this._hasOpponentPiece(newPosition)) {
       positions.push(newPosition);
       return true;

@@ -66,14 +66,17 @@ export class BoardComponent {
       : this.board;
   });
 
+  // Movimientos posibles de la pieza seleccionada
   public possiblePositionsMoves = computed(() => {
     const selectedPiece = this.selectedPiece();
     if (!selectedPiece) return [];
     if (selectedPiece.kind === 'king') {
-      const enemyMoves = this._getEnemyMoves(selectedPiece.color);
+      // En el caso del rey hay que comprobar si hay piezas que amenazando las posiciones posibles
+      const enemyThreats = this._getEnemyThreats(selectedPiece.color);
       const kingMoves = selectedPiece.movements();
-      return kingMoves.filter((move) => !enemyMoves[`${move.col}${move.row}`]);
-      // REVIEW - Se ha chequeado simplemente si el movimiento de los enemigos coincide con el movimiento del rey. Pero realmente no habria que ver los movimientos, si no las posibles amenazas. Por ejemplo, el peon puede mover de frente, pero amenaza en diagonal
+      return kingMoves.filter(
+        (move) => !enemyThreats[`${move.col}${move.row}`],
+      );
     }
     return selectedPiece.movements();
   });
@@ -305,7 +308,8 @@ export class BoardComponent {
     });
   }
 
-  private _getEnemyMoves(pieceColor: IColor): Record<string, boolean> {
+  // Recupera las amenazas enemigas
+  private _getEnemyThreats(pieceColor: IColor): Record<string, boolean> {
     const enemyColor = pieceColor === 'white' ? 'black' : 'white';
     const result: Record<string, boolean> = {};
     for (let cell$ of this.board.flat()) {
