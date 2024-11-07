@@ -47,11 +47,11 @@ export class Piece implements IPiece {
   public threats(): IPosition[] {
     const threats = {
       pawn: () => this._getPawnThreats(),
-      tower: () => this._getTowerMovements(),
-      horse: () => this._getHorseMovements(),
-      bishop: () => this._getBishopMovements(),
-      queen: () => this._getQueenMovements(),
-      king: () => this._getKingMovements(),
+      tower: () => this._getTowerMovements({ isThreat: true }),
+      horse: () => this._getHorseMovements({ isThreat: true }),
+      bishop: () => this._getBishopMovements({ isThreat: true }),
+      queen: () => this._getQueenMovements({ isThreat: true }),
+      king: () => this._getKingMovements({ isThreat: true }),
     };
     return threats[this.kind]();
   }
@@ -84,7 +84,7 @@ export class Piece implements IPiece {
     }
 
     // 3. Capture a piece
-    const threats = this._getPawnThreats(true);
+    const threats = this._getPawnThreats({ checkOpponent: true });
     positions.push(...threats);
 
     // 4. Capture in passant
@@ -97,7 +97,8 @@ export class Piece implements IPiece {
   }
 
   // Comprueba las amenazas de un peón
-  private _getPawnThreats(checkOpponent: boolean = false): IPosition[] {
+  private _getPawnThreats(options?: { checkOpponent: boolean }): IPosition[] {
+    const { checkOpponent = false } = options || {};
     const position = this.position();
     if (!position) return [];
     const { col, row } = position;
@@ -118,7 +119,8 @@ export class Piece implements IPiece {
     return positions;
   }
 
-  private _getTowerMovements(): IPosition[] {
+  private _getTowerMovements(options?: { isThreat: boolean }): IPosition[] {
+    const { isThreat = false } = options || {};
     let positions: IPosition[] = [];
     const position = this.position();
     if (!position) return [];
@@ -128,31 +130,56 @@ export class Piece implements IPiece {
     // 1. Move up
     for (let i = rows.indexOf(row) + 1; i < rows.length; i++) {
       const newPosition = { col, row: rows[i] };
-      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+      if (
+        this._isBreakIterableOrAssignPosition({
+          positions,
+          newPosition,
+          checkSameColorPiece: !isThreat,
+        })
+      )
         break;
     }
     // 2. Move right
     for (let i = cols.indexOf(col) + 1; i < cols.length; i++) {
       const newPosition = { col: cols[i], row };
-      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+      if (
+        this._isBreakIterableOrAssignPosition({
+          positions,
+          newPosition,
+          checkSameColorPiece: !isThreat,
+        })
+      )
         break;
     }
     // 3. Move down
     for (let i = rows.indexOf(row) - 1; i >= 0; i--) {
       const newPosition = { col, row: rows[i] };
-      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+      if (
+        this._isBreakIterableOrAssignPosition({
+          positions,
+          newPosition,
+          checkSameColorPiece: !isThreat,
+        })
+      )
         break;
     }
     // 4. Move left
     for (let i = cols.indexOf(col) - 1; i >= 0; i--) {
       const newPosition = { col: cols[i], row };
-      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+      if (
+        this._isBreakIterableOrAssignPosition({
+          positions,
+          newPosition,
+          checkSameColorPiece: !isThreat,
+        })
+      )
         break;
     }
     return positions;
   }
 
-  private _getHorseMovements(): IPosition[] {
+  private _getHorseMovements(options?: { isThreat: boolean }): IPosition[] {
+    const { isThreat = false } = options || {};
     let positions: IPosition[] = [];
     const position = this.position();
     if (!position) return [];
@@ -171,14 +198,19 @@ export class Piece implements IPiece {
     ];
 
     for (let newPosition of possibilities) {
-      this._isBreakIterableOrAssignPosition({ positions, newPosition });
+      this._isBreakIterableOrAssignPosition({
+        positions,
+        newPosition,
+        checkSameColorPiece: !isThreat,
+      });
     }
 
     console.log('HORSE', { positions });
     return positions;
   }
 
-  private _getBishopMovements(): IPosition[] {
+  private _getBishopMovements(options?: { isThreat: boolean }): IPosition[] {
+    const { isThreat = false } = options || {};
     let positions: IPosition[] = [];
     const position = this.position();
     if (!position) return [];
@@ -192,7 +224,13 @@ export class Piece implements IPiece {
       i++, j--
     ) {
       const newPosition = { col: cols[j], row: rows[i] };
-      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+      if (
+        this._isBreakIterableOrAssignPosition({
+          positions,
+          newPosition,
+          checkSameColorPiece: !isThreat,
+        })
+      )
         break;
     }
     // 2. Move up-right
@@ -202,7 +240,13 @@ export class Piece implements IPiece {
       i++, j++
     ) {
       const newPosition = { col: cols[j], row: rows[i] };
-      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+      if (
+        this._isBreakIterableOrAssignPosition({
+          positions,
+          newPosition,
+          checkSameColorPiece: !isThreat,
+        })
+      )
         break;
     }
     // 3. Move down-right
@@ -212,7 +256,13 @@ export class Piece implements IPiece {
       i--, j++
     ) {
       const newPosition = { col: cols[j], row: rows[i] };
-      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+      if (
+        this._isBreakIterableOrAssignPosition({
+          positions,
+          newPosition,
+          checkSameColorPiece: !isThreat,
+        })
+      )
         break;
     }
     // 4. Move down-left
@@ -222,23 +272,31 @@ export class Piece implements IPiece {
       i--, j--
     ) {
       const newPosition = { col: cols[j], row: rows[i] };
-      if (this._isBreakIterableOrAssignPosition({ positions, newPosition }))
+      if (
+        this._isBreakIterableOrAssignPosition({
+          positions,
+          newPosition,
+          checkSameColorPiece: !isThreat,
+        })
+      )
         break;
     }
     console.log('BISHOP', { positions });
     return positions;
   }
 
-  private _getQueenMovements(): IPosition[] {
+  private _getQueenMovements(options?: { isThreat: boolean }): IPosition[] {
+    const { isThreat = false } = options || {};
     const positions = [
-      ...this._getTowerMovements(),
-      ...this._getBishopMovements(),
+      ...this._getTowerMovements({ isThreat }),
+      ...this._getBishopMovements({ isThreat }),
     ];
     console.log('QUEEN', { positions });
     return positions;
   }
 
-  private _getKingMovements(): IPosition[] {
+  private _getKingMovements(options?: { isThreat: boolean }): IPosition[] {
+    const { isThreat = false } = options || {};
     let positions: IPosition[] = [];
     const position = this.position();
     if (!position) return [];
@@ -257,7 +315,11 @@ export class Piece implements IPiece {
     ];
 
     for (let newPosition of possibilities) {
-      this._isBreakIterableOrAssignPosition({ positions, newPosition });
+      this._isBreakIterableOrAssignPosition({
+        positions,
+        newPosition,
+        checkSameColorPiece: !isThreat,
+      });
     }
 
     // REVIEW Enrroque corto y largo
@@ -289,8 +351,6 @@ export class Piece implements IPiece {
         }
       }
     }
-    // TODO
-    // REVIEW sitios donde el rey no puede moverse por jaque
 
     return positions;
   }
@@ -326,14 +386,23 @@ export class Piece implements IPiece {
   private _isBreakIterableOrAssignPosition(data: {
     positions: IPosition[];
     newPosition: IPosition;
-    checkOpponent?: boolean;
+    checkSameColorPiece?: boolean;
   }): boolean {
-    const { positions, newPosition, checkOpponent = true } = data;
+    const { positions, newPosition, checkSameColorPiece = true } = data;
 
-    if (this._isOutOfBoard(newPosition) || this._hasSameColorPiece(newPosition))
+    if (
+      this._isOutOfBoard(newPosition) ||
+      // Si estamos checkeando el movimiento, no añadimos la posición ya que
+      // no se puede mover a una posición donde hay una pieza del mismo color
+      (checkSameColorPiece && this._hasSameColorPiece(newPosition))
+    )
       return true;
-    // REVIEW En el caso de las amenazas hay que comprobar tambien si se puede o no comer la pieza enemiga
-    if (this._hasOpponentPiece(newPosition)) {
+    if (
+      this._hasOpponentPiece(newPosition) ||
+      // Si no estamos checkeando el color de la pieza, añadimos la posición
+      // ya que en dicho caso una pieza si que puede amenazar esa posición
+      (!checkSameColorPiece && this._hasSameColorPiece(newPosition))
+    ) {
       positions.push(newPosition);
       return true;
     }
