@@ -22,6 +22,7 @@ export interface IPosition {
 
 export type IActionMove = IPosition & {
   isCastling?: boolean;
+  isDoublePawn?: boolean;
 };
 
 export interface IPiece {
@@ -39,7 +40,7 @@ export interface ICell {
   selected: boolean;
 }
 
-export type IMovement = IPosition & {
+export type IMovement = IActionMove & {
   color: IColor;
   piece: IPiece;
   imgSrc: string;

@@ -1,4 +1,4 @@
-import { computed, Signal, WritableSignal } from '@angular/core';
+import { computed, inject, Signal, WritableSignal } from '@angular/core';
 import { cols, rows } from '@constants/board.constants';
 import {
   IActionMove,
@@ -8,6 +8,7 @@ import {
   IPiece,
   IPosition,
 } from '@interfaces/board.types';
+import { StateService } from '@services/state.service';
 
 export class Piece implements IPiece {
   // ANCHOR : Propierties
@@ -25,6 +26,8 @@ export class Piece implements IPiece {
     const { col, row } = cell;
     return { col, row };
   });
+
+  private _stateSvc = inject(StateService);
 
   public isMoved?: boolean;
 
@@ -111,11 +114,14 @@ export class Piece implements IPiece {
     const isWhite = this.color === 'white';
     const direction = isWhite ? 1 : -1;
     const nextRow = rows.indexOf(row) + direction;
-    const positions: IPosition[] = [];
+    const positions: IActionMove[] = [];
     for (let col of [leftCol, rightCol]) {
       if (!col) continue;
       if (checkOpponent) {
-        if (this._hasOpponentPiece({ col, row: rows[nextRow] })) {
+        const hasOpponent = this._hasOpponentPiece({ col, row: rows[nextRow] });
+        // REVIEW - Check if the last movement was a double pawn movement
+        const hasPassantPawn = this._stateSvc.movements().at(-1)?.isDoublePawn;
+        if (hasOpponent) {
           positions.push({ col, row: rows[nextRow] });
         }
       } else positions.push({ col, row: rows[nextRow] });
@@ -308,7 +314,7 @@ export class Piece implements IPiece {
       { col: cols[cols.indexOf(col) + 1], row },
       { col: cols[cols.indexOf(col) + 1], row: rows[rows.indexOf(row) - 1] },
       { col, row: rows[rows.indexOf(row) + 1] },
-      { col, row: rows[rows.indexOf(row) - 1]},
+      { col, row: rows[rows.indexOf(row) - 1] },
       { col: cols[cols.indexOf(col) - 1], row: rows[rows.indexOf(row) + 1] },
       { col: cols[cols.indexOf(col) - 1], row },
       { col: cols[cols.indexOf(col) - 1], row: rows[rows.indexOf(row) - 1] },

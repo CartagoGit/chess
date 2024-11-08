@@ -96,7 +96,6 @@ export class BoardComponent {
         const cellsBetween = this.board[isWhitePiece ? 0 : 7].slice(
           ...towerCols,
         );
-        console.log({ cellsBetween });
         const hasCastlingThreated = cellsBetween.some((cell$) => {
           const cell = cell$();
           return !!enemyThreats[`${cell.col}${cell.row}`];
