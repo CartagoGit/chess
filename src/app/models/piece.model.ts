@@ -90,13 +90,9 @@ export class Piece implements IPiece {
       positions.push({ ...newPosition, isDoublePawn: i === 2 });
     }
 
-    // 3. Capture a piece
+    // 3. Capture a piece && 4. Capture in passant
     const threats = this._getPawnThreats({ checkOpponent: true });
     positions.push(...threats);
-
-    // 4. Capture in passant
-    // TODO
-    // REVIEW
 
     // Finally remove positions where there is a piece of the same color
 
@@ -119,9 +115,14 @@ export class Piece implements IPiece {
       if (!col) continue;
       if (checkOpponent) {
         const hasOpponent = this._hasOpponentPiece({ col, row: rows[nextRow] });
-        // REVIEW - Check if the last movement was a double pawn movement
+        // Check if the last movement was a double pawn movement
+        // 4. Capture in passant
         const hasPassantPawn = this._stateSvc.movements().at(-1)?.isDoublePawn;
-        if (hasOpponent) {
+        const lastMovement = this._stateSvc.movements().at(-1);
+        const { col: lastCol, row: lastRow } = lastMovement ?? {};
+        const hasPassantPawnInPosition =
+          hasPassantPawn && lastCol === col && lastRow === row;
+        if (hasOpponent || hasPassantPawnInPosition) {
           positions.push({ col, row: rows[nextRow] });
         }
       } else positions.push({ col, row: rows[nextRow] });

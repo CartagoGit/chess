@@ -267,6 +267,18 @@ export class BoardComponent {
     const selectedPiece = this.selectedPiece()!;
     // Check Castling Moves
     this._checkCastlingMoves(cellSelected);
+
+    // Check Capture in passant
+    this._checkCaptureInPassant(cellSelected);
+
+    // Es doble salto de peon?
+    const isDoublePawn =
+      selectedPiece.kind === 'pawn' &&
+      !selectedPiece.isMoved &&
+      Math.abs(
+        Number(cellSelected().row) - Number(selectedPiece.pieceCell()!.row),
+      ) === 2;
+
     this.selectedCell()?.update((value) => {
       return {
         ...value,
@@ -284,7 +296,6 @@ export class BoardComponent {
 
     // Cambiamos el color del turno
     this._stateSvc.isTurnWhite.update((isTurnWhite) => !isTurnWhite);
-
     // Añadimos el movimiento al historial
     this._stateSvc.movements.update((movements) => {
       const color = selectedPiece.color === 'black' ? 'b' : 'w';
@@ -298,6 +309,7 @@ export class BoardComponent {
           piece: selectedPiece,
           index: movements.length,
           imgSrc,
+          isDoublePawn,
         },
       ];
     });
@@ -347,5 +359,10 @@ export class BoardComponent {
       });
     }
     return result;
+  }
+
+  // Chequea si se puede hacer una captura al paso
+  private _checkCaptureInPassant(cellSelected: WritableSignal<ICell>) {
+    
   }
 }
