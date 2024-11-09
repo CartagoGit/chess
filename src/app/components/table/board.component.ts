@@ -363,6 +363,6 @@ export class BoardComponent {
 
   // Chequea si se puede hacer una captura al paso
   private _checkCaptureInPassant(cellSelected: WritableSignal<ICell>) {
-    
+    // REVIEW - Eliminar el peon en caso de que se este capturando al paso
   }
 }
