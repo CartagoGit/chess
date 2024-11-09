@@ -64,7 +64,7 @@ export class Piece implements IPiece {
   }
 
   private _getPawnMovements(): IPosition[] {
-    let positions: IPosition[] = [];
+    let positions: IActionMove[] = [];
     const position = this.position();
     if (!position) return [];
     const { col, row } = position;
@@ -87,7 +87,7 @@ export class Piece implements IPiece {
       )
         break;
       if (i === 2 && !isInitialPosition) break;
-      positions.push(newPosition);
+      positions.push({ ...newPosition, isDoublePawn: i === 2 });
     }
 
     // 3. Capture a piece
