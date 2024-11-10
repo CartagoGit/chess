@@ -18,9 +18,13 @@
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(8, 1fr);
-
+  outline: transparent 3px dashed;
+  &--selected-move{
+    outline: 4px dashed var(--secondary);
+  }
   &__wrapper {
     display: flex;
+    border-radius: var(--br);
     align-items: center;
     overflow: hidden;
     max-width: 100%;

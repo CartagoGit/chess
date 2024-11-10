@@ -1,4 +1,9 @@
-<div class="table__wrapper">
+<div
+  class="table__wrapper"
+  [ngClass]="{
+    'table--selected-move': selectedMovement(),
+  }"
+>
   <div class="table">
     @for (
       row of boardPerspective();
@@ -58,12 +63,14 @@
               'cell--white': cellColor === 'white',
               'cell--black': cellColor === 'black',
               'cell--selected': cellData.selected,
-              'cell--highlight': {
-                possiblePossitions: possiblePositionsMoves(),
-                position: {
-                  col: cellData.col,
-                  row: cellData.row
-                } } | hasPositionInArray,
+              'cell--highlight':
+                {
+                  possiblePossitions: possiblePositionsMoves(),
+                  position: {
+                    col: cellData.col,
+                    row: cellData.row,
+                  },
+                } | hasPositionInArray,
             }"
           >
           </span>
@@ -72,4 +79,3 @@
     }
   </div>
 </div>
-

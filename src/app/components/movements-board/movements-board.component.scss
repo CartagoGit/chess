@@ -46,7 +46,7 @@
       grid-area: main;
       gap: 1rem;
       row-gap: 0.5rem;
-      // overflow: auto;
+      overflow: auto;
       &:has(.movements__empty) {
         height: 100%;
         align-items: center;
@@ -81,7 +81,7 @@
       padding: 0.1rem 0.5rem;
       border-radius: 1rem;
       outline: transparent 3px dashed;
-      outline-offset: 3px;
+      outline-offset: -2px;
       &--selected {
         outline: 2px dashed var(--secondary);
       }

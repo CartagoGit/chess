@@ -42,6 +42,8 @@ export class BoardComponent {
 
   private _initBoard: ICell[][] = [];
 
+  public selectedMovement = computed(() => this._stateSvc.selectedMovement());
+
   public selectedCell = computed(() => {
     return this.board.flat().find((cell) => cell().selected);
   });
@@ -178,6 +180,13 @@ export class BoardComponent {
   }
 
   public setBoard(newBoard: ICell[][]): void {
+    // Pase lo que pase vamos a querer deseleccionar si hay alguna celda seleccionada previamente
+    this.selectedCell()?.update((value) => {
+      return {
+        ...value,
+        selected: false,
+      };
+    });
     // this.board = newBoard.map((row) => row.map((cell) => signal(cell)));
     for (let [indexRow, row] of this.board.entries()) {
       for (let [indexCell, cell$] of row.entries()) {
@@ -242,11 +251,13 @@ export class BoardComponent {
   }
 
   public onSelectCell(cellSelected: WritableSignal<ICell>): void {
+    // Ante todo si seleccionamos el tablero y hay algun movimiento seleccionado, volvemos a la situacion del tablero actual antes de poder seleccionar nada
+    if (this._hasMovementSelected()) return;
     const { col: cellCol, row: cellRow } = cellSelected();
     const { col: selectedCol, row: selectedRow } =
       this.selectedCell()?.() ?? {};
     const areSame = cellCol === selectedCol && cellRow === selectedRow;
-    const finalPosPiece = cellSelected().piece; // TODO Hacer que si es del color contrario no se pueda seleccionar
+    const finalPosPiece = cellSelected().piece;
     const selectedPiece = this.selectedPiece();
 
     // Si el sitio donde seleccionamos es un movimiento posible, se mueve la pieza
@@ -280,6 +291,16 @@ export class BoardComponent {
         };
       });
     }
+  }
+
+  private _hasMovementSelected(): boolean {
+    const hasSelectedMovement = !!this.selectedMovement();
+    if (hasSelectedMovement) {
+      this._stateSvc.selectedMovement.set(null);
+      const lastMove = this._stateSvc.movements().at(-1);
+      this.setBoard(lastMove!.momentBoard);
+    }
+    return hasSelectedMovement;
   }
 
   // Eventos necesarios cuando una pieza va realizar un movimiento
