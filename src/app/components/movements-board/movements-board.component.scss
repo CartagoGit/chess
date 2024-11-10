@@ -20,6 +20,7 @@
   grid-template-rows: auto minmax(0, 1fr) auto;
 
   .movements {
+
     &__header,
     &__main {
       display: grid;
@@ -45,7 +46,7 @@
       grid-area: main;
       gap: 1rem;
       row-gap: 0.5rem;
-      overflow: auto;
+      // overflow: auto;
       &:has(.movements__empty) {
         height: 100%;
         align-items: center;
@@ -79,6 +80,11 @@
       transition: all ease 0.3s;
       padding: 0.1rem 0.5rem;
       border-radius: 1rem;
+      outline: transparent 3px dashed;
+      outline-offset: 3px;
+      &--selected {
+        outline: 2px dashed var(--secondary);
+      }
       &--clickable {
         cursor: pointer;
         &.movements {

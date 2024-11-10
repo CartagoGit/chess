@@ -16,6 +16,7 @@ export class StateService {
   // public playerColor = Math.random() > 0.5 ? 'white' : 'black';
 
   public movements = signal<IMovement[]>([]);
+  public selectedMovement = signal<IMovement | null>(null);
 
   constructor() {}
 }

@@ -58,7 +58,8 @@ export class MovementsComponent {
     this.stateSvc.newMatch$.next();
   }
 
-  public setBoard(board: ICell[][]): void {
-    this.stateSvc.setBoard$.next(board);
+  public setBoard(movement: IMovement): void {
+    this.stateSvc.selectedMovement.set(movement);
+    this.stateSvc.setBoard$.next(movement.momentBoard);
   }
 }

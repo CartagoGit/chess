@@ -13,8 +13,9 @@
       [ngClass]="{
         movements__white: even,
         movements__black: !even,
+        'movements__item--selected': stateSvc.selectedMovement() === move,
       }"
-      (click)="setBoard(move.momentBoard)"
+      (click)="setBoard(move)"
     >
       <span>{{ index + 1 }}. </span>
       <span class="movements__img-wrapper">
