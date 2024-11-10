@@ -46,3 +46,6 @@ export type IMovement = IActionMove & {
   imgSrc: string;
   momentBoard: ICell[][];
 };
+
+
+export type ICheckState = 'check' | 'checkmate' | 'draw' | 'normal';
