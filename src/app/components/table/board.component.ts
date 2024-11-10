@@ -120,6 +120,9 @@ export class BoardComponent {
     const subNewMatch = this._stateSvc.newMatch$.subscribe(() =>
       this.newMatch(),
     );
+    const subSetBoard = this._stateSvc.setBoard$.subscribe((newBoard) =>
+      this.setBoard(newBoard),
+    );
     this._subscriptions.push(subNewMatch);
   }
 
@@ -179,10 +182,9 @@ export class BoardComponent {
     for (let [indexRow, row] of this.board.entries()) {
       for (let [indexCell, cell$] of row.entries()) {
         const newCell = newBoard[indexRow][indexCell];
-        cell$.update((value) => {
+        cell$.update(() => {
           return {
-            ...value,
-            piece: newCell.piece,
+            ...newCell,
           };
         });
       }

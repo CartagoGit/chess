@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { IMovement } from '@interfaces/board.types';
-import { BehaviorSubject } from 'rxjs';
+import { ICell, IMovement } from '@interfaces/board.types';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +12,7 @@ export class StateService {
   public isTurnWhite = signal<boolean>(true);
 
   public newMatch$ = new BehaviorSubject<void>(undefined);
+  public setBoard$ = new Subject<ICell[][]>();
   // public playerColor = Math.random() > 0.5 ? 'white' : 'black';
 
   public movements = signal<IMovement[]>([]);

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { IMovement } from '@interfaces/board.types';
+import { ICell, IMovement } from '@interfaces/board.types';
 import { StateService } from '@services/state.service';
 import { Subscription } from 'rxjs';
 
@@ -54,11 +54,11 @@ export class MovementsComponent {
     this._subscriptions.push(subMovements);
   }
 
-  public newGame() : void {
+  public newGame(): void {
     this.stateSvc.newMatch$.next();
-    this.stateSvc.movements.set([])
-    this.stateSvc.isTurnWhite.set(true)
   }
 
-
+  public setBoard(board: ICell[][]): void {
+    this.stateSvc.setBoard$.next(board);
+  }
 }
