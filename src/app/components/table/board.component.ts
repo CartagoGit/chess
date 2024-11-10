@@ -7,17 +7,11 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { PieceComponent } from '@components/piece/piece.component';
-import {
-  IActionMove,
-  ICell,
-  IColor,
-  IKindPiece,
-  IPosition,
-} from '@interfaces/board.types';
+import { ICell, IColor, IKindPiece } from '@interfaces/board.types';
 import { Piece } from '@models/piece.model';
 import { HasPositionInArrayPipe } from '@pipes/hasPositionInArray.pipe';
 import { StateService } from '@services/state.service';
-import { fromEventPattern, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { cols, rows } from 'src/app/constants/board.constants';
 
 @Component({
@@ -363,6 +357,22 @@ export class BoardComponent {
 
   // Chequea si se puede hacer una captura al paso
   private _checkCaptureInPassant(cellSelected: WritableSignal<ICell>) {
-    // REVIEW - Eliminar el peon en caso de que se este capturando al paso
+    const selectedPiece = this.selectedPiece()!;
+    const lastMove = this._stateSvc.movements().at(-1);
+    const { isDoublePawn, col: lastCol, row: lastRow } = lastMove || {};
+    if (selectedPiece.kind !== 'pawn' || !isDoublePawn) return;
+    const { col: celSelectedCol } = cellSelected();
+    const { row: selectedPieceRow } = selectedPiece.pieceCell()!;
+    const isCaptureInPassant =
+      celSelectedCol === lastCol && selectedPieceRow === lastRow;
+    if (!isCaptureInPassant) return;
+    const enemyPawnCell =
+      this.board[rows.indexOf(lastRow!)][cols.indexOf(celSelectedCol)];
+    enemyPawnCell.update((value) => {
+      return {
+        ...value,
+        piece: null,
+      };
+    });
   }
 }
