@@ -40,6 +40,8 @@ export class BoardComponent {
     },
   );
 
+  private _initBoard: ICell[][] = [];
+
   public selectedCell = computed(() => {
     return this.board.flat().find((cell) => cell().selected);
   });
@@ -104,7 +106,7 @@ export class BoardComponent {
 
   // ANCHOR Constructor
   constructor(private _stateSvc: StateService) {
-    this.newMatch();
+    this.createBoard();
     this._makeSubscriptions();
     // this._testHighlihtAndSelect();
   }
@@ -121,52 +123,73 @@ export class BoardComponent {
     this._subscriptions.push(subNewMatch);
   }
 
-  private _testHighlihtAndSelect() {
-    this.board[4][2].update((value) => {
-      return {
-        ...value,
-        piece: new Piece({
-          kind: 'tower',
-          color: 'black',
-          board: this.board,
-        }),
-      };
-    });
-    this.board[4][3].update((value) => {
-      return {
-        ...value,
-        piece: new Piece({
-          kind: 'tower',
-          color: 'black',
-          board: this.board,
-        }),
-      };
-    });
-    this.board[4][5].update((value) => {
-      return {
-        ...value,
-        selected: true,
-        piece: new Piece({
-          kind: 'tower',
-          color: 'black',
-          board: this.board,
-        }),
-      };
-    });
-    this.board[4][6].update((value) => {
-      return {
-        ...value,
-        selected: true,
-        piece: new Piece({
-          kind: 'tower',
-          color: 'black',
-          board: this.board,
-        }),
-      };
-    });
+  // private _testHighlihtAndSelect() {
+  //   this.board[4][2].update((value) => {
+  //     return {
+  //       ...value,
+  //       piece: new Piece({
+  //         kind: 'tower',
+  //         color: 'black',
+  //         board: this.board,
+  //       }),
+  //     };
+  //   });
+  //   this.board[4][3].update((value) => {
+  //     return {
+  //       ...value,
+  //       piece: new Piece({
+  //         kind: 'tower',
+  //         color: 'black',
+  //         board: this.board,
+  //       }),
+  //     };
+  //   });
+  //   this.board[4][5].update((value) => {
+  //     return {
+  //       ...value,
+  //       selected: true,
+  //       piece: new Piece({
+  //         kind: 'tower',
+  //         color: 'black',
+  //         board: this.board,
+  //       }),
+  //     };
+  //   });
+  //   this.board[4][6].update((value) => {
+  //     return {
+  //       ...value,
+  //       selected: true,
+  //       piece: new Piece({
+  //         kind: 'tower',
+  //         color: 'black',
+  //         board: this.board,
+  //       }),
+  //     };
+  //   });
+  // }
+
+  public newMatch(): void {
+    this._stateSvc.movements.set([]);
+    this._stateSvc.isTurnWhite.set(true);
+    this.setBoard(this._initBoard);
   }
 
-  public newMatch() {
+  public setBoard(newBoard: ICell[][]): void {
+    // this.board = newBoard.map((row) => row.map((cell) => signal(cell)));
+    for (let [indexRow, row] of this.board.entries()) {
+      for (let [indexCell, cell$] of row.entries()) {
+        const newCell = newBoard[indexRow][indexCell];
+        cell$.update((value) => {
+          return {
+            ...value,
+            piece: newCell.piece,
+          };
+        });
+      }
+    }
+  }
+
+  public createBoard() {
     const whitePiecesStartRow = [0, 1];
     const blackPiecesStartRow = [7, 6];
     const orderPieces: IKindPiece[] = [
@@ -199,6 +222,7 @@ export class BoardComponent {
           : 'black';
         const kind =
           indexRow === 0 || indexRow === 7 ? orderPieces[indexCell] : 'pawn';
+
         cell.update((value) => {
           return {
             ...value,
@@ -212,6 +236,7 @@ export class BoardComponent {
         });
       }
     }
+    this._initBoard = this.board.map((row) => row.map((cell$) => cell$()));
   }
 
   public onSelectCell(cellSelected: WritableSignal<ICell>): void {
@@ -255,6 +280,7 @@ export class BoardComponent {
     }
   }
 
+  // Eventos necesarios cuando una pieza va realizar un movimiento
   public onMovePiece(cellSelected: WritableSignal<ICell>): void {
     // if (!this.isTurnPiece()) return;
     // REVIEW REACTIVAR CUANDO SE TERMINEN DE CONFIGURAR TODOS LOS MOVIMIENTOS
@@ -304,6 +330,7 @@ export class BoardComponent {
           index: movements.length,
           imgSrc,
           isDoublePawn,
+          momentBoard: this.board.map((row) => row.map((cell$) => cell$())),
         },
       ];
     });

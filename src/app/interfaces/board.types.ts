@@ -44,4 +44,5 @@ export type IMovement = IActionMove & {
   color: IColor;
   piece: IPiece;
   imgSrc: string;
+  momentBoard: ICell[][];
 };
